@@ -10,6 +10,7 @@ export default function Home() {
   // console.log(username);
 
 
+  // TODO: commit 수 확인하기
 
   const getData = async () => {
     const token = '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';
