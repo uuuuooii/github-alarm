@@ -4,10 +4,9 @@ import React from 'react';
 
 const Alarm = () => {
   const onClickSendNotification = () => {
-    console.log('ss');
     if ('Notification' in window && Notification.permission === 'granted')
-      new Notification('Hello Developers!!', {
-        body: 'This is your notification message',
+      new Notification('알림!!', {
+        body: '알림 입니다.',
         icon: '/알림.png'
       });
   };
