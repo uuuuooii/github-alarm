@@ -20,10 +20,26 @@ export default function Home() {
       }
     };
     try {
+      // 유저 정보 가져오기
       const userResponse = await axios.get(`https://api.github.com/users/${username}`);
       const user = userResponse.data;
-      console.log(userResponse);
+      // console.log(userResponse);
 
+      // 레포지토리 정보 가져오기
+      const reposResponse = await axios.get(`https://api.github.com/users/${username}/repos`);
+      const repos = reposResponse.data;
+      // console.log(repos);
+
+      // 14번째 레포 커밋 수 가져오기
+      const repo = repos[14];
+      const commitsResponse = await axios.get(`https://api.github.com/repos/${username}/${repo.name}/stats/contributors`);
+      const commitData = commitsResponse.data;
+      console.log(commitData);
+
+      if (commitData.length === 0) {
+        console.error('No commit data found for the repository.');
+        return;
+      }
 
     } catch (err) {
       console.log(err);
