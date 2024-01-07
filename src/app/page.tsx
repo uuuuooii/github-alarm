@@ -36,11 +36,6 @@ export default function Home() {
       const commitData = commitsResponse.data;
       console.log(commitData);
 
-      if (commitData.length === 0) {
-        console.error('No commit data found for the repository.');
-        return;
-      }
-
     } catch (err) {
       console.log(err);
     }
