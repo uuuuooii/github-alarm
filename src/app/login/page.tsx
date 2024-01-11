@@ -25,7 +25,10 @@ const Login = () => {
 
   return (
 
-    <><LoginButton></LoginButton><Header></Header></>
+    <>
+      <Header />
+      <LoginButton />
+    </>
   );
 };
 
