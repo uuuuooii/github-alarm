@@ -30,14 +30,28 @@ export default function Home() {
       const repos = reposResponse.data;
       // console.log(repos);
 
-      // 14번째 레포 커밋 수 가져오기
-      const repo = repos[14];
-      const commitsResponse = await axios.get(`https://api.github.com/repos/${username}/${repo.name}/stats/contributors`);
-
-      const commitData = commitsResponse.data;
-
       const today = new Date().toLocaleDateString(); // 현재 날짜를 문자열로 변환
+      let todayCommits = 0;
+      for (let i = 0; i < repos.length; i++) {
+        const repo = repos[i];
+        // console.log(repo.name);
 
+        const commitsResponse = await axios.get(`https://api.github.com/repos/${username}/${repo.name}/stats/contributors`);
+        const commitData = commitsResponse.data;
+
+        // 오늘 날짜 커밋 수 계산
+        for (let j = 0; j < commitData.length; j++) {
+          const item = commitData[j];
+          for (let k = 0; k < item.weeks.length; k++) {
+            const week = item.weeks[k];
+            if (new Date(week.w * 1000).toLocaleDateString() === today) {
+              todayCommits += week.c;
+            }
+          }
+        }
+        console.log(`Repository: ${repo.name}, Today's Commits: ${todayCommits}`);
+
+      }
 
 
     } catch (err) {
