@@ -33,8 +33,12 @@ export default function Home() {
       // 14번째 레포 커밋 수 가져오기
       const repo = repos[14];
       const commitsResponse = await axios.get(`https://api.github.com/repos/${username}/${repo.name}/stats/contributors`);
+
       const commitData = commitsResponse.data;
-      console.log(commitData);
+
+      const today = new Date().toLocaleDateString(); // 현재 날짜를 문자열로 변환
+
+
 
     } catch (err) {
       console.log(err);
