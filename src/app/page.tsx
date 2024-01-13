@@ -36,20 +36,22 @@ export default function Home() {
       for (let i = 0; i < repos.length; i++) {
         const repo = repos[i];
 
+        // 레포지토리별 커밋 정보 가져오기
         const commitsResponse = await axios.get(`https://api.github.com/repos/${username}/${repo.name}/commits`);
         const commitData = commitsResponse.data;
 
-        for (let j = 0; j < commitData.length; j++) {
-          const commit = commitData[j];
-          const commitDate = new Date(commit.commit.author.date).toLocaleDateString();
 
-          if (commitDate === today) {
-            todayCommits++;
-          }
-        }
+        // 오늘 날짜의 커밋 필터링
+        const todayCommits = commitData.filter(commit => {
+          const commitDate = new Date(commit.commit.author.date).toLocaleDateString();
+          const today = new Date().toLocaleDateString();
+          return commitDate === today;
+        });
+
+        // 레포지토리명과 오늘의 커밋 수 출력
+        console.log(`Repository: ${repo.name}, Today's Commits: ${todayCommits.length}`);
       }
 
-      console.log(`Commits on ${today}: ${todayCommits}`);
 
 
     } catch (err) {
