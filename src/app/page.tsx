@@ -49,7 +49,7 @@ export default function Home() {
         });
 
         // 레포지토리명과 오늘의 커밋 수 출력
-        console.log(`Repository: ${repo.name}, Today's Commits: ${todayCommits.length}`);
+        console.log(`레포지토리: ${repo.name}, 오늘 커밋: ${todayCommits.length}`);
       }
 
 
