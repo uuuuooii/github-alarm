@@ -42,7 +42,7 @@ export default function Home() {
 
 
         // 오늘 날짜의 커밋 필터링
-        const todayCommits = commitData.filter(commit => {
+        const todayCommits = commitData.filter((commit: { commit: { author: { date: string | number | Date; }; }; }) => {
           const commitDate = new Date(commit.commit.author.date).toLocaleDateString();
           const today = new Date().toLocaleDateString();
           return commitDate === today;
