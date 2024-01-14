@@ -2,6 +2,7 @@
 
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
+import Jandi from '@components/components/jandi';
 
 export default function Home() {
   const [username, setUsername] = useState<string>('');
@@ -13,7 +14,7 @@ export default function Home() {
   // TODO: 전체 commit 수 가져오기
 
   const getData = async () => {
-    const token = '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';
+    const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
     const config = {
       headers: {
         Authorization: `Bearer ${token}`
@@ -26,7 +27,7 @@ export default function Home() {
       // console.log(userResponse);
 
       // 레포지토리 정보 가져오기
-      const reposResponse = await axios.get(`https://api.github.com/users/${username}/repos`, config);
+      const reposResponse = await axios.get(`https://api.github.com/users/${username}/repos`);
       const repos = reposResponse.data;
       // console.log(repos);
 
@@ -37,7 +38,7 @@ export default function Home() {
         const repo = repos[i];
 
         // 레포지토리별 커밋 정보 가져오기
-        const commitsResponse = await axios.get(`https://api.github.com/repos/${username}/${repo.name}/commits`, config);
+        const commitsResponse = await axios.get(`https://api.github.com/repos/${username}/${repo.name}/commits`);
         const commitData = commitsResponse.data;
 
         if (commitData.length === 0) {
@@ -77,8 +78,11 @@ export default function Home() {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <input type="text" value={username} onChange={onChangeInput} />
-    </form>
+    <div>
+      <form onSubmit={onSubmit}>
+        <input type="text" value={username} onChange={onChangeInput} />
+      </form>
+      <Jandi username={username} />
+    </div>
   );
 }
