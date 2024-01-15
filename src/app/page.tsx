@@ -1,17 +1,12 @@
 'use client';
 
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import axios from 'axios';
 import Jandi from '@components/components/jandi';
 
 export default function Home() {
   const [username, setUsername] = useState<string>('');
   const [data, setData] = useState();
-  // console.log(data);
-  // console.log(username);
-
-
-  // TODO: 전체 commit 수 가져오기
 
   const getData = async () => {
     const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;

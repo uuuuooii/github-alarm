@@ -1,14 +1,13 @@
 import axios from 'axios';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface JandiProps {
   username: string;
-  year?: number | 'last';
+  year?: number;
 }
 
 
 const Jandi = ({ username, year }: JandiProps) => {
-
 
   const onClickGetData = async () => {
     const API_URL = 'https://github-contributions-api.jogruber.de/v4/';
