@@ -6,8 +6,8 @@ import Jandi from '@components/components/jandi';
 
 export default function Home() {
   const [username, setUsername] = useState<string>('');
-  const [data, setData] = useState();
-
+  const [commit, setCommit] = useState<number>(0);
+  console.log(commit);
   const getData = async () => {
     const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
     const config = {
@@ -49,6 +49,7 @@ export default function Home() {
 
 
         commitCount += todayCommits.length;
+        setCommit(commitCount);
         // 레포지토리명과 오늘의 커밋 수 출력
         console.log(`레포지토리: ${repo.name}, 오늘 커밋: ${todayCommits.length}`);
         console.log(` 오늘 커밋 수: ${commitCount}`);
