@@ -53,10 +53,7 @@ export default function Home() {
         // 레포지토리명과 오늘의 커밋 수 출력
         console.log(`레포지토리: ${repo.name}, 오늘 커밋: ${todayCommits.length}`);
         console.log(` 오늘 커밋 수: ${commitCount}`);
-
       }
-
-
 
     } catch (err) {
       console.log(err);
@@ -67,7 +64,6 @@ export default function Home() {
     e.preventDefault();
     getData();
   };
-
 
   const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
