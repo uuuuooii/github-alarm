@@ -3,9 +3,18 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
+interface UserDataProps {
+  id: number;
+  login: string;
+}
+
+// TODO: 새로고침하면 에러 
 const Login = () => {
   const [isRerender, setIsRerender] = useState(false);
-  const [userDate, setUserData] = useState({});
+  const [userDate, setUserData] = useState<UserDataProps>({});
+  const [commit, setCommit] = useState<number>(0);
+
+  console.log(commit);
 
   const CLIENT_ID = "9a95ae529088d6393993";
   const loginWithGithub = () => {
@@ -24,12 +33,48 @@ const Login = () => {
     };
     // 유저 이름 가져오는거 맞음?
     const userResponse = await axios.get(
-      `https://api.github.com/users`,
+      `https://api.github.com/user`,
       config
     );
     const user = userResponse.data;
     setUserData(user);
+    // setUsername(user.login);
     console.log(userResponse);
+
+    // 레포지토리 정보 가져오기
+    const reposResponse = await axios.get(`https://api.github.com/users/${user.login}/repos`);
+    const repos = reposResponse.data;
+    // console.log(repos);
+
+
+    let commitCount = 0;
+
+    for (let i = 0; i < repos.length; i++) {
+      const repo = repos[i];
+
+      // 레포지토리별 커밋 정보 가져오기
+      const commitsResponse = await axios.get(`https://api.github.com/repos/${user.login}/${repo.name}/commits`);
+      const commitData = commitsResponse.data;
+
+      if (commitData.length === 0) {
+        console.log(`저장소에 커밋이 없음: ${repo.name}`);
+        continue; // 다음 저장소로 건너뛰기
+      }
+      // 오늘 날짜의 커밋 필터링
+      const todayCommits = commitData.filter((commit: { commit: { author: { date: string | number | Date; }; }; }) => {
+        const commitDate = new Date(commit.commit.author.date).toLocaleDateString();
+        const today = new Date().toLocaleDateString();
+        return commitDate === today;
+      });
+
+
+      commitCount += todayCommits.length;
+      setCommit(commitCount);
+      // 레포지토리명과 오늘의 커밋 수 출력
+      console.log(`레포지토리: ${repo.name}, 오늘 커밋: ${todayCommits.length}`);
+      console.log(` 오늘 커밋 수: ${commitCount}`);
+    }
+
   };
 
   useEffect(() => {
@@ -59,6 +104,8 @@ const Login = () => {
     }
   }, []);
 
+
+
   return (
     <div>
       {typeof window !== "undefined" && localStorage.getItem("accessToken") ? (
@@ -76,13 +123,10 @@ const Login = () => {
           <div>
             <p>Github User Data</p>
             <button onClick={getUserData}>Get Data</button>
-            {Object.keys(userDate).length !== 0 ? (
-              <div>
-                <p>{userDate.login}</p>
-              </div>
-            ) : (
-              <div></div>
-            )}
+            <div>
+              <p>ID: {userDate.login}</p>
+              <p>오늘 커밋 수: {commit}</p>
+            </div>
           </div>
         </div>
       ) : (
