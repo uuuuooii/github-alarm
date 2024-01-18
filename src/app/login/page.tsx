@@ -2,8 +2,6 @@
 
 import axios from 'axios';
 import React, { useEffect } from 'react';
-import LoginButton from '.';
-import Header from './header';
 
 
 const Login = () => {
@@ -26,8 +24,6 @@ const Login = () => {
   return (
 
     <>
-      <Header />
-      <LoginButton />
     </>
   );
 };
