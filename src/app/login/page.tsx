@@ -8,13 +8,12 @@ interface UserDataProps {
   login: string;
 }
 
-// TODO: 새로고침하면 에러 
 const Login = () => {
   const [isRerender, setIsRerender] = useState(false);
-  const [userDate, setUserData] = useState<UserDataProps>({});
+  const [userDate, setUserData] = useState<UserDataProps>({ id: 0, login: '' });
   const [commit, setCommit] = useState<number>(0);
 
-  console.log(commit);
+  console.log(userDate?.id);
 
   const CLIENT_ID = "9a95ae529088d6393993";
   const loginWithGithub = () => {
@@ -105,10 +104,9 @@ const Login = () => {
   }, []);
 
 
-
   return (
     <div>
-      {typeof window !== "undefined" && localStorage.getItem("accessToken") ? (
+      {userDate ? (
         <div>
           <p>accessToken이 있습니다</p>
           <button
