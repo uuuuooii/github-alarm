@@ -13,8 +13,6 @@ const Login = () => {
   const [userDate, setUserData] = useState<UserDataProps>({ id: 0, login: '' });
   const [commit, setCommit] = useState<number>(0);
 
-  console.log(userDate?.id);
-
   const CLIENT_ID = "9a95ae529088d6393993";
   const loginWithGithub = () => {
     window.location.assign(
@@ -24,27 +22,22 @@ const Login = () => {
 
   const getUserData = async () => {
     const token = localStorage.getItem("accessToken");
-    console.log(token);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
-    // 유저 이름 가져오는거 맞음?
+
     const userResponse = await axios.get(
       `https://api.github.com/user`,
       config
     );
     const user = userResponse.data;
     setUserData(user);
-    // setUsername(user.login);
-    console.log(userResponse);
 
     // 레포지토리 정보 가져오기
     const reposResponse = await axios.get(`https://api.github.com/users/${user.login}/repos`);
     const repos = reposResponse.data;
-    // console.log(repos);
-
 
     let commitCount = 0;
 
