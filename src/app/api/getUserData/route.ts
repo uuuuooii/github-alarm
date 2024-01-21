@@ -23,5 +23,6 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     return new NextResponse(JSON.stringify(json), { status: 200 });
   } catch (error) {
     console.log(error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 };

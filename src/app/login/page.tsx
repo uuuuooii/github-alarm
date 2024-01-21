@@ -12,6 +12,8 @@ const Login = () => {
   const [isRerender, setIsRerender] = useState(false);
   const [userDate, setUserData] = useState<UserDataProps>({ id: 0, login: '' });
   const [commit, setCommit] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
+
   const token = typeof window !== 'undefined' && localStorage.getItem("accessToken");
 
   // github으로 로그인 code 받기
@@ -23,6 +25,8 @@ const Login = () => {
   };
 
   const getUserData = async () => {
+    setLoading(true);
+
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -79,6 +83,8 @@ const Login = () => {
     if (codeParam && token === null) {
 
       const getAccessToken = async () => {
+        setLoading(true);
+
         await fetch(
           `http://localhost:3000/api/getAccessToken?code=${codeParam}`,
           { method: "GET" }
@@ -100,8 +106,9 @@ const Login = () => {
 
 
   return (
+
     <div>
-      {localStorage.getItem("accessToken") ? (
+      {typeof window !== "undefined" && localStorage.getItem("accessToken") ? (
         <div>
           <p>accessToken이 있습니다</p>
           <button
