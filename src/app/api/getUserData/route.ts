@@ -24,6 +24,8 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
       status: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS', // 요청 허용하는 메서드 추가
+        'Access-Control-Allow-Headers': 'Authorization', // 요청 허용하는 헤더 추가
       },
     });
   } catch (error) {
