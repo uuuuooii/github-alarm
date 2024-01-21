@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async (request: NextRequest, response: NextResponse) => {
   try {
-    const requestUrl = await request.nextUrl;
+    const requestUrl = new URL(request.nextUrl);
     const code = requestUrl.searchParams.get('code');
     console.log('code:' + code);
 
