@@ -12,7 +12,6 @@ const Login = () => {
   const [isRerender, setIsRerender] = useState(false);
   const [userDate, setUserData] = useState<UserDataProps>({ id: 0, login: '' });
   const [commit, setCommit] = useState<number>(0);
-  const [loading, setLoading] = useState(false);
 
   const token = typeof window !== 'undefined' && localStorage.getItem("accessToken");
 
@@ -25,7 +24,6 @@ const Login = () => {
   };
 
   const getUserData = async () => {
-    setLoading(true);
 
     const config = {
       headers: {
@@ -83,8 +81,6 @@ const Login = () => {
     if (codeParam && token === null) {
 
       const getAccessToken = async () => {
-        setLoading(true);
-
         await fetch(
           `/api/getAccessToken?code=${codeParam}`,
           { method: "GET" }
