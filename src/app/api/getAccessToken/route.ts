@@ -27,7 +27,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     console.log('GitHub API response:', json);
 
     return new NextResponse(JSON.stringify(json), {
-      status: 201,
+      status: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
       },
