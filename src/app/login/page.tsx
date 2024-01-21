@@ -34,7 +34,7 @@ const Login = () => {
     };
 
     const userResponse = await axios.get(
-      `http://localhost:3000/api/getUserData`,
+      `https://github-alarm.vercel.app/api/getUserData`,
       config
     );
     const user = userResponse.data;
@@ -86,7 +86,7 @@ const Login = () => {
         setLoading(true);
 
         await fetch(
-          `http://localhost:3000/api/getAccessToken?code=${codeParam}`,
+          `https://github-alarm.vercel.app/api/getAccessToken?code=${codeParam}`,
           { method: "GET" }
         )
           .then((response) => {
