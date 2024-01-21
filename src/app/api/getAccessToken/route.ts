@@ -8,7 +8,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
 
     const baseUrl = 'https://github.com/login/oauth/access_token';
     const config = {
-      client_id: process.env.GITHUB_CLIENT_ID || '',
+      client_id: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID || '',
       client_secret: process.env.GITHUB_CLIENT_SECRET || '',
       code: code || '',
     };

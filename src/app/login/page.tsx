@@ -13,10 +13,11 @@ const Login = () => {
   const [userDate, setUserData] = useState<UserDataProps>({ id: 0, login: '' });
   const [commit, setCommit] = useState<number>(0);
 
-  const CLIENT_ID = "9a95ae529088d6393993";
+  // github으로 로그인 code 받기
+  // 예) code=4bf42ada452ddda0e66d
   const loginWithGithub = () => {
     window.location.assign(
-      `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}`
+      `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
     );
   };
 
@@ -70,12 +71,14 @@ const Login = () => {
   };
 
   useEffect(() => {
+    // url에 있는 code 가져오기
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const codeParam = urlParams.get("code");
     console.log(codeParam);
     console.log(localStorage.getItem("accessToken"));
     if (codeParam && localStorage.getItem("accessToken") === null) {
+
       const getAccessToken = async () => {
         await fetch(
           `http://localhost:3000/api/getAccessToken?code=${codeParam}`,
@@ -99,7 +102,7 @@ const Login = () => {
 
   return (
     <div>
-      {userDate ? (
+      {localStorage.getItem("accessToken") ? (
         <div>
           <p>accessToken이 있습니다</p>
           <button
