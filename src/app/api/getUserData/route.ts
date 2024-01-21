@@ -20,7 +20,12 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
 
     const json = await data.json();
 
-    return new NextResponse(JSON.stringify(json), { status: 200 });
+    return new NextResponse(JSON.stringify(json), {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
   } catch (error) {
     console.log(error);
     return new NextResponse('Internal Server Error', { status: 500 });
