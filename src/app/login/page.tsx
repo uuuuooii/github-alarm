@@ -30,7 +30,7 @@ const Login = () => {
     };
 
     const userResponse = await axios.get(
-      `https://api.github.com/user`,
+      `http://localhost:3000/api/getUserData`,
       config
     );
     const user = userResponse.data;
