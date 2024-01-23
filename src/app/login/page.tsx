@@ -37,6 +37,7 @@ const Login = () => {
     );
     const user = userResponse.data;
     setUserData(user);
+    console.log(user);
 
     // 레포지토리 정보 가져오기
     const reposResponse = await axios.get(`https://api.github.com/users/${user.login}/repos`);

@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
+import { query } from '../../../lib/db';
 
 export const GET = async (request: NextRequest, response: NextResponse) => {
   try {
@@ -19,6 +20,11 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     });
 
     const json = await data.json();
+
+    await query({
+      query: 'INSERT INTO users (id, username) VALUES (?, ?)',
+      values: [json.id, json.login],
+    });
 
     return new NextResponse(JSON.stringify(json), {
       status: 200,

@@ -69,14 +69,6 @@ export default function Home() {
     setUsername(e.target.value);
   };
 
-  const handleTest = () => {
-    let data = {
-      email: "test.com"
-    };
-    axios.post("/api/users", data).then((response) => {
-      console.log(response);
-    });
-  };
 
   return (
     <div>
@@ -84,7 +76,6 @@ export default function Home() {
         <input type="text" value={username} onChange={onChangeInput} />
       </form>
       <Jandi username={username} />
-      <button onClick={handleTest}>test</button>
     </div>
   );
 }
