@@ -22,8 +22,8 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     const json = await data.json();
 
     await query({
-      query: 'INSERT INTO users (id, username) VALUES (?, ?)',
-      values: [json.id, json.login],
+      query: 'INSERT INTO users (id, username, login) VALUES (?, ?, ?)',
+      values: [json.id, json.name, json.login],
     });
 
     return new NextResponse(JSON.stringify(json), {
