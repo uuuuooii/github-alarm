@@ -4,7 +4,6 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
   try {
     const requestUrl = new URL(request.nextUrl);
     const code = requestUrl.searchParams.get('code');
-    console.log('code:' + code);
 
     const baseUrl = 'https://github.com/login/oauth/access_token';
     const config = {
@@ -14,7 +13,6 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     };
     const params = new URLSearchParams(config).toString();
     const finalUrl = `${baseUrl}?${params}`;
-    console.log('Final URL:', finalUrl);
 
     const data = await fetch(finalUrl, {
       method: 'POST',
