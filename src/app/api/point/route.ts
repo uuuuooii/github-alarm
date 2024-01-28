@@ -10,7 +10,7 @@ import axios from 'axios';
 export const GET = async (request: NextResponse, response: NextResponse) => {
   try {
     let commitCount = 0;
-    let continuoDays = 3;
+    let continuoDays = 0;
     let point = 0;
 
     // 레포지토리 정보 가져오기
@@ -56,6 +56,7 @@ export const GET = async (request: NextResponse, response: NextResponse) => {
     // 하루 커밋 수가 1개 이상이면 4포인트 부여
     if (commitCount >= 1) {
       point += 4;
+      continuoDays += 1;
     }
 
     // 특정 일 이상 연속 커밋으로 추가 포인트 부여
