@@ -27,6 +27,8 @@ export const GET = async (request: NextResponse, response: NextResponse) => {
     if (commitCount >= 1) {
       point += 4;
       continuoDays += 1;
+    } else {
+      continuoDays = 0;
     }
 
     // 특정 일 이상 연속 커밋으로 추가 포인트 부여
@@ -48,6 +50,12 @@ export const GET = async (request: NextResponse, response: NextResponse) => {
     if (continuoDays === 66) {
       point += 36;
     }
+
+    // DB 저장
+    await query({
+      query: 'INSERT INTO point (continuou_days) VALUES (?)',
+      values: [continuoDays],
+    });
 
     return new NextResponse(point, { status: 200 });
   } catch (error) {

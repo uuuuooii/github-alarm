@@ -36,8 +36,6 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
 
     const repos = await reposResponse.json();
     let commitCount = 0;
-    let consecutiveDays = 0;
-    let currentStreak = 0;
 
     for (let i = 0; i < repos.length; i++) {
       const repo = repos[i];
@@ -56,7 +54,6 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
 
       if (commitData.length === 0) {
         console.log(`저장소에 커밋이 없음: ${repo.name}`);
-        consecutiveDays = 0; // 커밋이 없으면 연속된 날짜를 초기화
         continue; // 다음 저장소로 건너뛰기
       }
       // 오늘 날짜의 커밋 필터링
