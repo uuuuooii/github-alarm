@@ -5,65 +5,23 @@
 
 import { NextResponse, NextRequest } from 'next/server';
 import { query } from '../../../lib/db';
-import axios from 'axios';
 
 export const GET = async (request: NextResponse, response: NextResponse) => {
   try {
-    let commitCount = 0;
+    // 가정: 특정 사용자의 ID를 사용하여 commit_count 조회
+    const userId = 97392254; // 사용자 ID를 설정하세요.
+
+    // 데이터베이스에서 commit_count 조회
+    const result = await query({
+      query: 'SELECT commit_count FROM users WHERE id = ?',
+      values: [userId],
+    });
+
+    console.log(result);
+
+    const commitCount = result[0].commit_count;
     let continuoDays = 0;
     let point = 0;
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${'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'}`,
-      },
-    };
-
-    const userResponse = await axios.get(
-      `http://localhost:3000/api/getUserData`,
-      config
-    );
-    const user = userResponse.data;
-    // console.log('user', user);
-    // 레포지토리 정보 가져오기
-    const reposResponse = await fetch(
-      `https://api.github.com/users/${user.login}/repos`
-    );
-    const repos = await reposResponse.json();
-    // console.log('repos', repos);
-
-    for (let i = 0; i < repos.length; i++) {
-      const repo = repos[i];
-
-      // 레포지토리별 커밋 정보 가져오기
-      const commitsResponse = await axios.get(
-        `https://api.github.com/repos/${'uuuuooii'}/${repo.name}/commits`
-      );
-      const commitData = commitsResponse.data;
-      console.log('commitData', commitData);
-      if (commitData.length === 0) {
-        console.log(`저장소에 커밋이 없음: ${repo.name}`);
-        continue; // 다음 저장소로 건너뛰기
-      }
-      // 오늘 날짜의 커밋 필터링
-      const todayCommits = commitData.filter(
-        (commit: { commit: { author: { date: string | number | Date } } }) => {
-          const commitDate = new Date(
-            commit.commit.author.date
-          ).toLocaleDateString();
-          const today = new Date().toLocaleDateString();
-          return commitDate === today;
-        }
-      );
-
-      commitCount += Number(todayCommits.length);
-
-      // 레포지토리명과 오늘의 커밋 수 출력
-      console.log(
-        `레포지토리: ${repo.name}, 오늘 커밋: ${todayCommits.length}`
-      );
-      console.log(` 오늘 커밋 수: ${commitCount}`);
-    }
 
     // 하루 커밋 수가 1개 이상이면 4포인트 부여
     if (commitCount >= 1) {

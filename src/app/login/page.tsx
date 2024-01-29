@@ -40,7 +40,7 @@ const Login = () => {
     console.log(user);
 
     // 레포지토리 정보 가져오기
-    const reposResponse = await axios.get(`https://api.github.com/users/${user.login}/repos`);
+    const reposResponse = await axios.get(`https://api.github.com/users/${user.login}/repos`, config);
     const repos = reposResponse.data;
 
     let commitCount = 0;
@@ -49,7 +49,7 @@ const Login = () => {
       const repo = repos[i];
 
       // 레포지토리별 커밋 정보 가져오기
-      const commitsResponse = await axios.get(`https://api.github.com/repos/${user.login}/${repo.name}/commits`);
+      const commitsResponse = await axios.get(`https://api.github.com/repos/${user.login}/${repo.name}/commits`, config);
       const commitData = commitsResponse.data;
 
       if (commitData.length === 0) {
