@@ -13,12 +13,24 @@ export const GET = async (request: NextResponse, response: NextResponse) => {
     let continuoDays = 0;
     let point = 0;
 
+    const config = {
+      headers: {
+        Authorization: `Bearer ${'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'}`,
+      },
+    };
+
+    const userResponse = await axios.get(
+      `http://localhost:3000/api/getUserData`,
+      config
+    );
+    const user = userResponse.data;
+    // console.log('user', user);
     // 레포지토리 정보 가져오기
     const reposResponse = await fetch(
-      `https://api.github.com/users/${'uuuuooii'}/repos`
+      `https://api.github.com/users/${user.login}/repos`
     );
     const repos = await reposResponse.json();
-    console.log('repos', repos);
+    // console.log('repos', repos);
 
     for (let i = 0; i < repos.length; i++) {
       const repo = repos[i];
