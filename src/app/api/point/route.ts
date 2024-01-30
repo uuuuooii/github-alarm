@@ -9,7 +9,7 @@ import { query } from '../../../lib/db';
 export const GET = async (request: NextResponse, response: NextResponse) => {
   try {
     // 가정: 특정 사용자의 ID를 사용하여 commit_count 조회
-    const userId = 97392254; // 사용자 ID를 설정하세요.
+    const userId = 97392254; // 사용자 ID
 
     // 데이터베이스에서 commit_count 조회
     const result = await query({
