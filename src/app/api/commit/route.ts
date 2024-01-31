@@ -4,14 +4,6 @@ import axios from 'axios';
 
 export const GET = async (request: NextRequest, response: NextResponse) => {
   try {
-    // Authorization 헤더를 가져오기
-    // const authorizationHeader = request.headers.get('Authorization');
-
-    // if (!authorizationHeader) {
-    //   return new NextResponse('Authorization header is missing', {
-    //     status: 401,
-    //   });
-    // }
     // 가정: 특정 사용자의 ID를 사용하여 commit_count 조회
     const userId = 97392254; // 사용자 ID
 
