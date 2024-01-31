@@ -24,9 +24,8 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
 
     // DB 저장
     await query({
-      query:
-        'INSERT INTO users (id, username, login, access_token) VALUES (?, ?, ?, ?)',
-      values: [json.id, json.name, json.login, authorizationHeader],
+      query: 'INSERT INTO users (id, username, nickname) VALUES (?, ?, ?)',
+      values: [json.id, json.name, json.login],
     });
 
     return new NextResponse(JSON.stringify(json), {

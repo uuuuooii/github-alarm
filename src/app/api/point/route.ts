@@ -3,6 +3,8 @@
 // 2. 사용자가 연속적으로 커밋 했을 떄 3일 째에 4포인트 추가로 지급
 // 3. 사용자가 가구를 구매하면 포인트 차감
 
+// 총 point는 api 호출시에 users 데이터에 업데이트
+
 import { NextResponse, NextRequest } from 'next/server';
 import { query } from '../../../lib/db';
 

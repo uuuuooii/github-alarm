@@ -1,3 +1,5 @@
+// 최고 연속 커밋 기록은 api 호출 시에 users 데이터에 업데이트
+
 import { NextResponse, NextRequest } from 'next/server';
 import { query } from '../../../lib/db';
 import axios from 'axios';
@@ -7,19 +9,11 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     // 가정: 특정 사용자의 ID를 사용하여 commit_count 조회
     const userId = 97392254; // 사용자 ID
 
-    // 데이터베이스에서 access_token 조회
-    const result = await query({
-      query: 'SELECT access_token FROM users WHERE id = ?',
-      values: [userId],
-    });
-
-    const accessToken = result[0]?.access_token;
-
     // 개인 정보
     const data = await fetch('https://api.github.com/user', {
       method: 'GET',
       headers: {
-        Authorization: accessToken,
+        Authorization: 'Bearer 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',
       },
     });
 
@@ -31,7 +25,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
       {
         method: 'GET',
         headers: {
-          Authorization: accessToken,
+          Authorization: 'Bearer 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',
         },
       }
     );
@@ -49,7 +43,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
         {
           method: 'GET',
           headers: {
-            Authorization: accessToken,
+            Authorization: 'Bearer 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',
           },
         }
       );
@@ -82,8 +76,9 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
 
     // DB 저장
     await query({
-      query: 'INSERT INTO commit ( commit_day, commit_count) VALUES ( ?, ?)',
-      values: [today, commitCount],
+      query:
+        'INSERT INTO commit (id, commit_day, commit_count) VALUES (?, ?, ?)',
+      values: [userId, today, commitCount],
     });
 
     return new NextResponse(JSON.stringify(json), {
