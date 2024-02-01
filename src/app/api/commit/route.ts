@@ -6,14 +6,14 @@ import axios from 'axios';
 
 export const GET = async (request: NextRequest, response: NextResponse) => {
   try {
+    // 개인 정보
     // 가정: 특정 사용자의 ID를 사용하여 commit_count 조회
     const userId = 97392254; // 사용자 ID
 
-    // 개인 정보
     const data = await fetch('https://api.github.com/user', {
       method: 'GET',
       headers: {
-        Authorization: 'Bearer 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',
+        Authorization: 'Bearer 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',
       },
     });
 
@@ -25,7 +25,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
       {
         method: 'GET',
         headers: {
-          Authorization: 'Bearer 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',
+          Authorization: 'Bearer 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',
         },
       }
     );
@@ -43,7 +43,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
         {
           method: 'GET',
           headers: {
-            Authorization: 'Bearer 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',
+            Authorization: 'Bearer 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',
           },
         }
       );

@@ -15,49 +15,62 @@ export const GET = async (request: NextResponse, response: NextResponse) => {
 
     // 데이터베이스에서 commit_count 조회
     const result = await query({
-      query: 'SELECT commit_count FROM users WHERE id = ?',
+      query: 'SELECT commit_count FROM commit WHERE id = ?',
       values: [userId],
     });
 
     console.log(result);
 
-    const commitCount = result[0].commit_count;
-    let continuoDays = 0;
     let point = 0;
+    let history;
 
-    // 하루 커밋 수가 1개 이상이면 4포인트 부여
-    if (commitCount >= 1) {
-      point += 4;
-      continuoDays += 1;
-    } else {
-      continuoDays = 0;
-    }
+    for (let i = 0; i < result.length; i++) {
+      const commitCount = result[i].commit_count;
 
-    // 특정 일 이상 연속 커밋으로 추가 포인트 부여
-    if (continuoDays === 3) {
-      point += 4;
-    }
-    if (continuoDays === 7) {
-      point += 8;
-    }
-    if (continuoDays === 14) {
-      point += 12;
-    }
-    if (continuoDays === 21) {
-      point += 16;
-    }
-    if (continuoDays === 42) {
-      point += 20;
-    }
-    if (continuoDays === 66) {
-      point += 36;
+      // 하루 커밋 수가 1개 이상이면 4포인트 부여
+      if (commitCount >= 1) {
+        point += 4;
+        history = '매일 커밋';
+      }
     }
 
     // DB 저장
     await query({
-      query: 'INSERT INTO point (continuou_days) VALUES (?)',
-      values: [continuoDays],
+      query: 'INSERT INTO point (id, point, history) VALUES (?,?,?)',
+      values: [userId, point, history],
     });
+
+    // 연속 포인트 추가
+    let continuoDays = 0;
+
+    const resultday = await query({
+      query:
+        'SELECT * FROM users JOIN commit ON users.id = commit.id WHERE users.id = ?',
+      values: [userId],
+    });
+    console.log(resultday);
+
+    for (let i = 0; i < resultday.length; i++) {
+      // 특정 일 이상 연속 커밋으로 추가 포인트 부여
+      if (resultday[i].max_consecutive_days === 3) {
+        point += 4;
+      }
+      if (resultday[i].max_consecutive_days === 7) {
+        point += 8;
+      }
+      if (resultday[i].max_consecutive_days === 14) {
+        point += 12;
+      }
+      if (resultday[i].max_consecutive_days === 21) {
+        point += 16;
+      }
+      if (resultday[i].max_consecutive_days === 42) {
+        point += 20;
+      }
+      if (resultday[i].max_consecutive_days === 66) {
+        point += 36;
+      }
+    }
 
     return new NextResponse(point, { status: 200 });
   } catch (error) {
