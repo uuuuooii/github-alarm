@@ -8,21 +8,25 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { query } from '@/lib/db';
 
-export const GET = async (request: NextResponse, response: NextResponse) => {
+interface ResultProps {
+  commit_count: number;
+  commit_day: string;
+  created_at: Date;
+  max_consecutive_days: number;
+}
+
+export const GET = async () => {
   try {
     // 가정: 특정 사용자의 ID를 사용하여 commit_count 조회
     const userId = 97392254; // 사용자 ID
 
-    // 'SELECT * FROM users JOIN commit ON users.id = commit.id WHERE users.id = ?',
-
     // 데이터베이스에서 commit_count 조회
-    const result = await query({
+    const result = (await query({
       query:
         'SELECT * FROM commit JOIN point ON commit.id = point.id WHERE commit.id = ?',
       values: [userId],
-    });
-
-    // console.log(result);
+    })) as ResultProps[];
+    console.log(result);
 
     let point = 0;
     let history;
@@ -34,9 +38,7 @@ export const GET = async (request: NextResponse, response: NextResponse) => {
 
       // 하루 커밋 수가 1개 이상이면 4포인트 부여
       // 이미 오늘 4포인트를 받으면 안 줌
-
       const today = new Date().toLocaleDateString();
-      // console.log('today', today);
 
       if (today === commitDay && commitCount >= 1 && timestampPoint !== today) {
         point = 4;
@@ -47,8 +49,6 @@ export const GET = async (request: NextResponse, response: NextResponse) => {
           query: 'UPDATE commit SET created_at = ? WHERE id = ?',
           values: [new Date(), userId],
         });
-
-        console.log('point', point);
       } else if (timestampPoint === today && commitCount === 0) {
         point = 0;
         history = '없음';
@@ -62,12 +62,11 @@ export const GET = async (request: NextResponse, response: NextResponse) => {
     });
 
     // 연속 포인트 추가
-    const resultday = await query({
+    const resultday = (await query({
       query:
         'SELECT * FROM users JOIN commit ON users.id = commit.id WHERE users.id = ?',
       values: [userId],
-    });
-    // console.log(resultday);
+    })) as ResultProps[];
 
     for (let i = 0; i < resultday.length; i++) {
       // 특정 일 이상 연속 커밋으로 추가 포인트 부여
@@ -91,7 +90,7 @@ export const GET = async (request: NextResponse, response: NextResponse) => {
       }
     }
 
-    return new NextResponse(point, { status: 200 });
+    return new NextResponse(JSON.stringify(point), { status: 200 });
   } catch (error) {
     console.log(error);
     return new NextResponse('Internal Server Error', { status: 500 });
