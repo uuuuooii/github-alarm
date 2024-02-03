@@ -58,13 +58,36 @@ export const getRepoData = async (
 
     commitCount += todayCommits.length;
     // 레포지토리명과 오늘의 커밋 수 출력
-    console.log(`레포지토리: ${repo.name}, 오늘 커밋: ${todayCommits.length}`);
-    console.log(` 오늘 커밋 수: ${commitCount}`);
+    // console.log(`레포지토리: ${repo.name}, 오늘 커밋: ${todayCommits.length}`);
+    // console.log(` 오늘 커밋 수: ${commitCount}`);
   }
 
-  // DB 저장
-  await query({
-    query: 'INSERT INTO commit (id, commit_day, commit_count) VALUES (?, ?, ?)',
-    values: [userId, today, commitCount],
+  // 조회
+  const existingData = await query({
+    query: 'SELECT commit_day, commit_count FROM commit WHERE id = ?',
+    values: [userId],
   });
+  console.log(existingData);
+
+  const existingRecord = existingData[0];
+
+  if (existingRecord.commit_day === today) {
+    // If today's data already exists, update the record
+    const updatedCount = existingRecord.commit_count + commitCount;
+
+    await query({
+      query:
+        'UPDATE commit SET commit_count = ? WHERE id = ? AND commit_day = ?',
+      values: [updatedCount, userId, today],
+    });
+
+    console.log(`${today}에 대한 기존 레코드를 업데이트했습니다.`);
+  } else {
+    // DB 저장
+    await query({
+      query:
+        'INSERT INTO commit (id, commit_day, commit_count) VALUES (?, ?, ?)',
+      values: [userId, today, commitCount],
+    });
+  }
 };

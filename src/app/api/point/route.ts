@@ -26,10 +26,11 @@ export const GET = async () => {
         'SELECT * FROM commit JOIN point ON commit.id = point.id WHERE commit.id = ?',
       values: [userId],
     })) as ResultProps[];
-    console.log(result);
+    // console.log(result);
 
     let point = 0;
     let history;
+    let testDay = '2024. 2. 7.';
 
     for (let i = 0; i < result.length; i++) {
       const commitCount = result[i].commit_count;
@@ -39,8 +40,12 @@ export const GET = async () => {
       // 하루 커밋 수가 1개 이상이면 4포인트 부여
       // 이미 오늘 4포인트를 받으면 안 줌
       const today = new Date().toLocaleDateString();
-
-      if (today === commitDay && commitCount >= 1 && timestampPoint !== today) {
+      // console.log(today);
+      if (
+        testDay === commitDay &&
+        commitCount >= 1 &&
+        timestampPoint !== testDay
+      ) {
         point = 4;
         history = '매일 커밋';
 
@@ -49,46 +54,54 @@ export const GET = async () => {
           query: 'UPDATE commit SET created_at = ? WHERE id = ?',
           values: [new Date(), userId],
         });
-      } else if (timestampPoint === today && commitCount === 0) {
+      } else if (timestampPoint === testDay && commitCount === 0) {
         point = 0;
         history = '없음';
       }
     }
 
+    // 연속 포인트 추가
+    const resultday = await query({
+      query: 'SELECT max_consecutive_days FROM users WHERE id = ?',
+      values: [userId],
+    });
+    console.log(resultday[0].max_consecutive_days);
+
+    // console.log(resultday[i]);
+    // 특정 일 이상 연속 커밋으로 추가 포인트 부여
+    if (resultday[0].max_consecutive_days === 3) {
+      point = 4;
+      history = '연속 3일차';
+    }
+    if (resultday[0].max_consecutive_days === 7) {
+      console.log('연속 7일차');
+
+      point = 8;
+      history = '연속 7일차';
+    }
+    if (resultday[0].max_consecutive_days === 14) {
+      point = 12;
+      history = '연속 14일차';
+    }
+    if (resultday[0].max_consecutive_days === 21) {
+      point = 16;
+      history = '연속 21일차';
+    }
+    if (resultday[0].max_consecutive_days === 42) {
+      point = 20;
+      history = '연속 42일차';
+    }
+    if (resultday[0].max_consecutive_days === 66) {
+      point = 36;
+      history = '연속 66일차';
+    }
+
     // DB 저장
     await query({
-      query: 'INSERT INTO point (id, point, history) VALUES (?,?,?)',
-      values: [userId, point, history],
-    });
-
-    // 연속 포인트 추가
-    const resultday = (await query({
       query:
-        'SELECT * FROM users JOIN commit ON users.id = commit.id WHERE users.id = ?',
-      values: [userId],
-    })) as ResultProps[];
-
-    for (let i = 0; i < resultday.length; i++) {
-      // 특정 일 이상 연속 커밋으로 추가 포인트 부여
-      if (resultday[i].max_consecutive_days === 3) {
-        point += 4;
-      }
-      if (resultday[i].max_consecutive_days === 7) {
-        point += 8;
-      }
-      if (resultday[i].max_consecutive_days === 14) {
-        point += 12;
-      }
-      if (resultday[i].max_consecutive_days === 21) {
-        point += 16;
-      }
-      if (resultday[i].max_consecutive_days === 42) {
-        point += 20;
-      }
-      if (resultday[i].max_consecutive_days === 66) {
-        point += 36;
-      }
-    }
+        'INSERT INTO point (id, payment_day, point, history) VALUES (?,?,?,?)',
+      values: [userId, testDay, point, history],
+    });
 
     return new NextResponse(JSON.stringify(point), { status: 200 });
   } catch (error) {

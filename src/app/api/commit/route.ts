@@ -2,7 +2,6 @@
 
 import { NextResponse, NextRequest } from 'next/server';
 import { query } from '@/lib/db';
-import axios from 'axios';
 import { authorizationHeader } from '@/lib/utils/authorization';
 import { getRepoData } from './repo';
 
