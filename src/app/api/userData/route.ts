@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { query } from '../../../lib/db';
+import { query } from '@/lib/db';
 
 export const GET = async (request: NextRequest, response: NextResponse) => {
   try {

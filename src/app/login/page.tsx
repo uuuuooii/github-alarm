@@ -32,7 +32,7 @@ const Login = () => {
     };
 
     const userResponse = await axios.get(
-      `/api/getUserData`,
+      `/api/userData`,
       config
     );
     const user = userResponse.data;
@@ -83,7 +83,7 @@ const Login = () => {
 
       const getAccessToken = async () => {
         await fetch(
-          `/api/getAccessToken?code=${codeParam}`,
+          `/api/accessToken?code=${codeParam}`,
           { method: "GET" }
         )
           .then((response) => {

@@ -1,7 +1,7 @@
 // 최고 연속 커밋 기록은 api 호출 시에 users 데이터에 업데이트
 
 import { NextResponse, NextRequest } from 'next/server';
-import { query } from '../../../lib/db';
+import { query } from '@/lib/db';
 import axios from 'axios';
 
 export const GET = async (request: NextRequest, response: NextResponse) => {

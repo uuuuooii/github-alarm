@@ -6,31 +6,52 @@
 // 총 point는 api 호출시에 users 데이터에 업데이트
 
 import { NextResponse, NextRequest } from 'next/server';
-import { query } from '../../../lib/db';
+import { query } from '@/lib/db';
 
 export const GET = async (request: NextResponse, response: NextResponse) => {
   try {
     // 가정: 특정 사용자의 ID를 사용하여 commit_count 조회
     const userId = 97392254; // 사용자 ID
 
+    // 'SELECT * FROM users JOIN commit ON users.id = commit.id WHERE users.id = ?',
+
     // 데이터베이스에서 commit_count 조회
     const result = await query({
-      query: 'SELECT commit_count FROM commit WHERE id = ?',
+      query:
+        'SELECT * FROM commit JOIN point ON commit.id = point.id WHERE commit.id = ?',
       values: [userId],
     });
 
-    console.log(result);
+    // console.log(result);
 
     let point = 0;
     let history;
 
     for (let i = 0; i < result.length; i++) {
       const commitCount = result[i].commit_count;
+      const commitDay = result[i].commit_day;
+      const timestampPoint = result[i].created_at.toLocaleDateString();
 
       // 하루 커밋 수가 1개 이상이면 4포인트 부여
-      if (commitCount >= 1) {
-        point += 4;
+      // 이미 오늘 4포인트를 받으면 안 줌
+
+      const today = new Date().toLocaleDateString();
+      // console.log('today', today);
+
+      if (today === commitDay && commitCount >= 1 && timestampPoint !== today) {
+        point = 4;
         history = '매일 커밋';
+
+        // 포인트가 이미 오늘 지급되었음을 표시하기 위해 타임스탬프 업데이트
+        await query({
+          query: 'UPDATE commit SET created_at = ? WHERE id = ?',
+          values: [new Date(), userId],
+        });
+
+        console.log('point', point);
+      } else if (timestampPoint === today && commitCount === 0) {
+        point = 0;
+        history = '없음';
       }
     }
 
@@ -41,14 +62,12 @@ export const GET = async (request: NextResponse, response: NextResponse) => {
     });
 
     // 연속 포인트 추가
-    let continuoDays = 0;
-
     const resultday = await query({
       query:
         'SELECT * FROM users JOIN commit ON users.id = commit.id WHERE users.id = ?',
       values: [userId],
     });
-    console.log(resultday);
+    // console.log(resultday);
 
     for (let i = 0; i < resultday.length; i++) {
       // 특정 일 이상 연속 커밋으로 추가 포인트 부여
