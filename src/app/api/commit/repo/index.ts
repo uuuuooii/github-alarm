@@ -2,6 +2,11 @@ import { query } from '@/lib/db';
 import axios from 'axios';
 import { NextResponse } from 'next/server';
 
+export interface ExistingDataProps {
+  commit_day: Date;
+  commit_count: number;
+}
+
 export const getRepoData = async (
   authorization: string | NextResponse<unknown>,
   json: any
@@ -63,16 +68,22 @@ export const getRepoData = async (
   }
 
   // 조회
-  const existingData = await query({
+  const existingData = (await query({
     query: 'SELECT commit_day, commit_count FROM commit WHERE id = ?',
     values: [userId],
-  });
+  })) as ExistingDataProps[];
   console.log(existingData);
 
-  const existingRecord = existingData[0];
+  // 첫 번째가 아니라 전체 확인 해야함
+  const existingRecord = existingData.find((item) => item.commit_day === today);
+  console.log('existingRecord.commit_day', existingRecord);
+  console.log('existingRecord.commit_count', existingRecord?.commit_count);
+  console.log('today', today);
 
-  if (existingRecord.commit_day === today) {
-    // If today's data already exists, update the record
+  if (existingRecord) {
+    // DB 업데이트
+
+    console.log(' DB 업데이트');
     const updatedCount = existingRecord.commit_count + commitCount;
 
     await query({
@@ -84,6 +95,7 @@ export const getRepoData = async (
     console.log(`${today}에 대한 기존 레코드를 업데이트했습니다.`);
   } else {
     // DB 저장
+    console.log(' DB 저장');
     await query({
       query:
         'INSERT INTO commit (id, commit_day, commit_count) VALUES (?, ?, ?)',

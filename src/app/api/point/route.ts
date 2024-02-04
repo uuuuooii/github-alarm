@@ -1,9 +1,4 @@
-// 1. 사용자가 하루에 한 번이라도 커밋 하면 4포인트 지급
-//  -> 만약 커밋이 있으면 +4
-// 2. 사용자가 연속적으로 커밋 했을 떄 3일 째에 4포인트 추가로 지급
-// 3. 사용자가 가구를 구매하면 포인트 차감
-
-// 총 point는 api 호출시에 users 데이터에 업데이트
+//TODO: 하루 포인트 추가 되면 더 이상 포인트 추가 안 되게. 그리고 연속일 되면 추가 되게끔
 
 import { NextResponse, NextRequest } from 'next/server';
 import { query } from '@/lib/db';
@@ -31,6 +26,7 @@ export const GET = async () => {
     let point = 0;
     let history;
     let testDay = '2024. 2. 7.';
+    const today = new Date().toLocaleDateString();
 
     for (let i = 0; i < result.length; i++) {
       const commitCount = result[i].commit_count;
@@ -39,13 +35,8 @@ export const GET = async () => {
 
       // 하루 커밋 수가 1개 이상이면 4포인트 부여
       // 이미 오늘 4포인트를 받으면 안 줌
-      const today = new Date().toLocaleDateString();
       // console.log(today);
-      if (
-        testDay === commitDay &&
-        commitCount >= 1 &&
-        timestampPoint !== testDay
-      ) {
+      if (today === commitDay && commitCount >= 1 && timestampPoint !== today) {
         point = 4;
         history = '매일 커밋';
 
@@ -54,54 +45,66 @@ export const GET = async () => {
           query: 'UPDATE commit SET created_at = ? WHERE id = ?',
           values: [new Date(), userId],
         });
-      } else if (timestampPoint === testDay && commitCount === 0) {
+      } else if (timestampPoint === today && commitCount === 0) {
         point = 0;
         history = '없음';
       }
     }
+    // DB 저장
+    await query({
+      query:
+        'INSERT INTO point (id, payment_day, point, history) VALUES (?,?,?,?)',
+      values: [userId, today, point, history],
+    });
 
     // 연속 포인트 추가
-    const resultday = await query({
+    const resultday = (await query({
       query: 'SELECT max_consecutive_days FROM users WHERE id = ?',
       values: [userId],
-    });
-    console.log(resultday[0].max_consecutive_days);
+    })) as ResultProps[];
+
+    const test = resultday.map(
+      (item: { max_consecutive_days: number }) => item.max_consecutive_days
+    );
+
+    console.log(test);
 
     // console.log(resultday[i]);
     // 특정 일 이상 연속 커밋으로 추가 포인트 부여
-    if (resultday[0].max_consecutive_days === 3) {
+    if (test[0] === 3) {
       point = 4;
       history = '연속 3일차';
     }
-    if (resultday[0].max_consecutive_days === 7) {
+    if (test[0] === 7) {
       console.log('연속 7일차');
 
       point = 8;
       history = '연속 7일차';
     }
-    if (resultday[0].max_consecutive_days === 14) {
+    if (test[0] === 14) {
       point = 12;
       history = '연속 14일차';
     }
-    if (resultday[0].max_consecutive_days === 21) {
+    if (test[0] === 21) {
       point = 16;
       history = '연속 21일차';
     }
-    if (resultday[0].max_consecutive_days === 42) {
+    if (test[0] === 42) {
       point = 20;
       history = '연속 42일차';
     }
-    if (resultday[0].max_consecutive_days === 66) {
+
+    if (test[0] === 66) {
       point = 36;
       history = '연속 66일차';
     }
 
     // DB 저장
-    await query({
-      query:
-        'INSERT INTO point (id, payment_day, point, history) VALUES (?,?,?,?)',
-      values: [userId, testDay, point, history],
-    });
+    // await query({
+    //   query:
+    //     'INSERT INTO point (id, payment_day, point, history) VALUES (?,?,?,?)',
+    //   values: [userId, today, point, history],
+    // });
 
     return new NextResponse(JSON.stringify(point), { status: 200 });
   } catch (error) {
