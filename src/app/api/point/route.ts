@@ -8,6 +8,7 @@ interface ResultProps {
   commit_day: string;
   created_at: Date;
   max_consecutive_days: number;
+  payment_day: string;
 }
 
 export const GET = async () => {
@@ -27,7 +28,9 @@ export const GET = async () => {
     let history;
     let testDay = '2024. 2. 7.';
     const today = new Date().toLocaleDateString();
+    const existingRecord = result.find((item) => item.payment_day === today);
 
+    console.log('existingRecord', existingRecord);
     for (let i = 0; i < result.length; i++) {
       const commitCount = result[i].commit_count;
       const commitDay = result[i].commit_day;
@@ -36,7 +39,7 @@ export const GET = async () => {
       // 하루 커밋 수가 1개 이상이면 4포인트 부여
       // 이미 오늘 4포인트를 받으면 안 줌
       // console.log(today);
-      if (today === commitDay && commitCount >= 1 && timestampPoint !== today) {
+      if (today === commitDay && commitCount >= 1 && !existingRecord) {
         point = 4;
         history = '매일 커밋';
 
@@ -50,12 +53,15 @@ export const GET = async () => {
         history = '없음';
       }
     }
+
     // DB 저장
-    await query({
-      query:
-        'INSERT INTO point (id, payment_day, point, history) VALUES (?,?,?,?)',
-      values: [userId, today, point, history],
-    });
+    if (!existingRecord) {
+      await query({
+        query:
+          'INSERT INTO point (id, payment_day, point, history) VALUES (?,?,?,?)',
+        values: [userId, today, point, history],
+      });
+    }
 
     // 연속 포인트 추가
     const resultday = (await query({
@@ -99,12 +105,13 @@ export const GET = async () => {
       history = '연속 66일차';
     }
 
-    // DB 저장
-    // await query({
-    //   query:
-    //     'INSERT INTO point (id, payment_day, point, history) VALUES (?,?,?,?)',
-    //   values: [userId, today, point, history],
-    // });
+    if (!existingRecord) {
+      await query({
+        query:
+          'INSERT INTO point (id, payment_day, point, history) VALUES (?,?,?,?)',
+        values: [userId, today, point, history],
+      });
+    }
 
     return new NextResponse(JSON.stringify(point), { status: 200 });
   } catch (error) {
