@@ -31,7 +31,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     // 레포 정보
     await getRepoData(authorization, json);
 
-    // DB 전체 커밋 정보
+    // 클라이언트에 보내는 값
     const commitData = (await query({
       query: 'SELECT * FROM commit WHERE id = ?',
       values: [userId],

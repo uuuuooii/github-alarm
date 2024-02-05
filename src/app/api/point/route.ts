@@ -14,6 +14,7 @@ interface ResultProps {
 export const GET = async () => {
   try {
     // 가정: 특정 사용자의 ID를 사용하여 commit_count 조회
+    // id params
     const userId = 97392254; // 사용자 ID
 
     // 데이터베이스에서 commit_count 조회
@@ -30,6 +31,8 @@ export const GET = async () => {
     const today = new Date().toLocaleDateString();
     const existingRecord = result.find((item) => item.payment_day === today);
 
+    // 여기서?
+
     console.log('existingRecord', existingRecord);
     for (let i = 0; i < result.length; i++) {
       const commitCount = result[i].commit_count;
@@ -44,13 +47,14 @@ export const GET = async () => {
         history = '매일 커밋';
 
         // 포인트가 이미 오늘 지급되었음을 표시하기 위해 타임스탬프 업데이트
-        await query({
-          query: 'UPDATE commit SET created_at = ? WHERE id = ?',
-          values: [new Date(), userId],
-        });
+        // await query({
+        //   query: 'UPDATE commit SET created_at = ? WHERE id = ?',
+        //   values: [new Date(), userId],
+        // });
       } else if (timestampPoint === today && commitCount === 0) {
-        point = 0;
-        history = '없음';
+        // 이상함
+        // point = 0;
+        // history = '없음';
       }
     }
 
@@ -113,6 +117,7 @@ export const GET = async () => {
       });
     }
 
+    // point, history
     return new NextResponse(JSON.stringify(point), { status: 200 });
   } catch (error) {
     console.log(error);
