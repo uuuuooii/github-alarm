@@ -121,6 +121,6 @@ export const GET = async () => {
     return new NextResponse(JSON.stringify(point), { status: 200 });
   } catch (error) {
     console.log(error);
-    return new NextResponse('Internal Server Error', { status: 500 });
+    return new NextResponse(JSON.stringify(error), { status: 500 });
   }
 };
