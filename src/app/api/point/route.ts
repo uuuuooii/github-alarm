@@ -1,7 +1,7 @@
+import { query } from '@/lib/db';
 //TODO: 하루 포인트 추가 되면 더 이상 포인트 추가 안 되게. 그리고 연속일 되면 추가 되게끔
 
 import { NextResponse, NextRequest } from 'next/server';
-import { query } from '@/lib/db';
 
 interface ResultProps {
   commit_count: number;
