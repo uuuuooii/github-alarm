@@ -36,7 +36,14 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     // 연속일 업데이트
     await updateConsecutiveDay(userId);
 
-    return new NextResponse(JSON.stringify(json), {
+    // 클라이언트에 보내는 값
+    const formattedUserData = {
+      id: json.id,
+      name: json.name,
+      nickname: json.login,
+    };
+
+    return new NextResponse(JSON.stringify(formattedUserData), {
       status: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
