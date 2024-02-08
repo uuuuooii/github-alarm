@@ -40,4 +40,6 @@ export const updateConsecutiveDay = async (userId: number) => {
     query: 'UPDATE users SET max_consecutive_days = ? WHERE id = ?',
     values: [maxConsecutiveDays, userId],
   });
+
+  return { max_consecutive_days: maxConsecutiveDays };
 };

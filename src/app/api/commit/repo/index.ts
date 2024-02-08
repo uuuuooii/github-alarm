@@ -63,8 +63,8 @@ export const getRepoData = async (
 
     commitCount += todayCommits.length;
     // 레포지토리명과 오늘의 커밋 수 출력
-    // console.log(`레포지토리: ${repo.name}, 오늘 커밋: ${todayCommits.length}`);
-    // console.log(` 오늘 커밋 수: ${commitCount}`);
+    console.log(`레포지토리: ${repo.name}, 오늘 커밋: ${todayCommits.length}`);
+    console.log(` 오늘 커밋 수: ${commitCount}`);
   }
 
   // 조회
@@ -89,7 +89,7 @@ export const getRepoData = async (
     await query({
       query:
         'UPDATE commit SET commit_count = ? WHERE id = ? AND commit_day = ?',
-      values: [updatedCount, userId, today],
+      values: [userId, today, updatedCount],
     });
 
     console.log(`${today}에 대한 기존 레코드를 업데이트했습니다.`);

@@ -20,4 +20,6 @@ export const updatePoint = async (userId: number) => {
     query: 'UPDATE users SET all_point = ? WHERE id = ?',
     values: [point, userId],
   });
+
+  return { all_point: point };
 };

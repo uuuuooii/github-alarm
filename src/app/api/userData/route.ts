@@ -31,16 +31,18 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     }
 
     // point 업데이트
-    await updatePoint(userId);
+    const pointData = await updatePoint(userId);
 
     // 연속일 업데이트
-    await updateConsecutiveDay(userId);
+    const maxDay = await updateConsecutiveDay(userId);
 
     // 클라이언트에 보내는 값
     const formattedUserData = {
       id: json.id,
       name: json.name,
       nickname: json.login,
+      all_point: pointData.all_point,
+      max_consecutive_days: maxDay.max_consecutive_days,
     };
 
     return new NextResponse(JSON.stringify(formattedUserData), {
