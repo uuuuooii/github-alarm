@@ -79,17 +79,18 @@ export const getRepoData = async (
   console.log('existingRecord.commit_day', existingRecord);
   console.log('existingRecord.commit_count', existingRecord?.commit_count);
   console.log('today', today);
+  console.log('commitCount', commitCount);
 
   if (existingRecord) {
     // DB 업데이트
 
     console.log(' DB 업데이트');
-    const updatedCount = existingRecord.commit_count + commitCount;
-
+    const updatedCount = commitCount;
+    console.log(' updatedCount', updatedCount);
     await query({
       query:
         'UPDATE commit SET commit_count = ? WHERE id = ? AND commit_day = ?',
-      values: [userId, today, updatedCount],
+      values: [updatedCount, userId, today],
     });
 
     console.log(`${today}에 대한 기존 레코드를 업데이트했습니다.`);
