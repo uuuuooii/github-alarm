@@ -86,7 +86,7 @@ export const getRepoData = async (
 
     console.log(' DB 업데이트');
     const updatedCount = commitCount;
-    console.log(' updatedCount', updatedCount);
+
     await query({
       query:
         'UPDATE commit SET commit_count = ? WHERE id = ? AND commit_day = ?',

@@ -13,103 +13,66 @@ interface ResultProps {
 
 export const GET = async () => {
   try {
-    // 가정: 특정 사용자의 ID를 사용하여 commit_count 조회
-    // id params
-    const userId = 97392254; // 사용자 ID
+    const userId = 97392254;
+    const today = new Date().toLocaleDateString();
 
-    // 데이터베이스에서 commit_count 조회
-    const result = (await query({
+    // 커밋 기록 조회
+    const resultCommit = (await query({
       query:
         'SELECT * FROM commit JOIN point ON commit.id = point.id WHERE commit.id = ?',
       values: [userId],
     })) as ResultProps[];
-    // console.log(result);
 
-    let point = 0;
-    let history;
-    let testDay = '2024. 2. 7.';
-    const today = new Date().toLocaleDateString();
-    const existingRecord = result.find((item) => item.payment_day === today);
-
-    // 여기서?
-
-    console.log('existingRecord', existingRecord);
-    for (let i = 0; i < result.length; i++) {
-      const commitCount = result[i].commit_count;
-      const commitDay = result[i].commit_day;
-      const timestampPoint = result[i].created_at.toLocaleDateString();
-
-      // 하루 커밋 수가 1개 이상이면 4포인트 부여
-      // 이미 오늘 4포인트를 받으면 안 줌
-      // console.log(today);
-      if (today === commitDay && commitCount >= 1 && !existingRecord) {
-        point = 4;
-        history = '매일 커밋';
-
-        // 포인트가 이미 오늘 지급되었음을 표시하기 위해 타임스탬프 업데이트
-        // await query({
-        //   query: 'UPDATE commit SET created_at = ? WHERE id = ?',
-        //   values: [new Date(), userId],
-        // });
-      } else if (timestampPoint === today && commitCount === 0) {
-        // 이상함
-        // point = 0;
-        // history = '없음';
-      }
-    }
-
-    // DB 저장
-    if (!existingRecord) {
-      await query({
-        query:
-          'INSERT INTO point (id, payment_day, point, history) VALUES (?,?,?,?)',
-        values: [userId, today, point, history],
-      });
-    }
-
-    // 연속 포인트 추가
-    const resultday = (await query({
+    // 최대 연속일 조회
+    const resultMaxDay = (await query({
       query: 'SELECT max_consecutive_days FROM users WHERE id = ?',
       values: [userId],
     })) as ResultProps[];
 
-    const test = resultday.map(
-      (item: { max_consecutive_days: number }) => item.max_consecutive_days
+    const maxConsecutiveDays = resultMaxDay[0].max_consecutive_days;
+
+    let point = 0;
+    let history;
+
+    // 오늘 커밋 기록 확인
+    const existingRecord = resultCommit.find(
+      (item) => item.payment_day === today
     );
+    console.log('existingRecord', existingRecord);
+    // for (let i = 0; i < resultCommit.length; i++) {
+    const commitCount = resultCommit.commit_count;
+    const commitDay = resultCommit.commit_day;
 
-    console.log(test);
-
-    // console.log(resultday[i]);
-    // 특정 일 이상 연속 커밋으로 추가 포인트 부여
-    if (test[0] === 3) {
+    // 하루 커밋 수가 1개 이상이면 4포인트 부여
+    if (today === commitDay && commitCount >= 1 && !existingRecord) {
       point = 4;
-      history = '연속 3일차';
-    }
-    if (test[0] === 7) {
-      console.log('연속 7일차');
-
-      point = 8;
-      history = '연속 7일차';
-    }
-    if (test[0] === 14) {
-      point = 12;
-      history = '연속 14일차';
-    }
-    if (test[0] === 21) {
-      point = 16;
-      history = '연속 21일차';
-    }
-    if (test[0] === 42) {
-      point = 20;
-      history = '연속 42일차';
+      history = '매일 커밋';
+    } else {
+      point = 0;
+      history = '커밋 없음';
     }
 
-    if (test[0] === 66) {
-      point = 36;
-      history = '연속 66일차';
+    // 특정 일 이상 연속 커밋으로 추가 포인트 부여
+    const array = [3, 7, 14, 21, 42, 66];
+    const arrayPoint = [4, 8, 12, 16, 20, 36];
+
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === maxConsecutiveDays) {
+        point += arrayPoint[i] + 4;
+        history = `매일 커밋 + 연속${maxConsecutiveDays}일차  `;
+      }
     }
 
-    if (!existingRecord) {
+    // 포인트 기록 저장
+    if (existingRecord) {
+      // DB 업데이트
+      console.log(' DB 업데이트');
+      await query({
+        query: 'UPDATE point SET point = ? WHERE id = ? AND payment_day = ?',
+        values: [point, userId, today, history],
+      });
+    } else {
+      // DB 저장
       await query({
         query:
           'INSERT INTO point (id, payment_day, point, history) VALUES (?,?,?,?)',
@@ -117,8 +80,13 @@ export const GET = async () => {
       });
     }
 
-    // point, history
-    return new NextResponse(JSON.stringify(point), { status: 200 });
+    // 클라이언트에 보내는 값
+    const formattedPoint = {
+      point: point,
+      history: history,
+    };
+
+    return new NextResponse(JSON.stringify(formattedPoint), { status: 200 });
   } catch (error) {
     console.log(error);
     return new NextResponse(JSON.stringify(error), { status: 500 });

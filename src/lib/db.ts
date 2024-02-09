@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+const oracledb = require('oracledb');
 
 interface QueryParams {
   query: string;
@@ -6,7 +6,7 @@ interface QueryParams {
 }
 
 export const query = async ({ query, values = [] }: QueryParams) => {
-  const dbconnection = await mysql.createConnection({
+  const dbconnection = await oracledb.getConnection({
     host: process.env.MYSQL_HOST,
     port: parseInt(process.env.MYSQL_PORT || ''),
     database: process.env.MYSQL_DATABASE,

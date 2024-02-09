@@ -18,17 +18,17 @@ export const updateConsecutiveDay = async (userId: number) => {
         ROW_NUMBER() OVER (PARTITION BY commit_day ORDER BY commit_count DESC) AS rnk
       FROM users
       JOIN commit ON users.id = commit.id
-      WHERE users.id = ? AND commit_count >= 1
+      WHERE users.id = ? 
     ) AS ranked
     WHERE rnk = 1;
   `,
     values: [userId],
   })) as ResultPops[];
-  console.log(result);
+  // console.log(result);
   for (let i = 0; i < result.length; i++) {
     if (result[i].commit_day && result[i].commit_count >= 1) {
-      // console.log(result[i].commit_day);
-      // console.log(result[i].commit_count >= 1);
+      console.log('result[i].commit_day', result[i].commit_day);
+      console.log('result[i].commit_count >= 1', result[i].commit_count >= 1);
 
       maxConsecutiveDays += 1;
     } else {
