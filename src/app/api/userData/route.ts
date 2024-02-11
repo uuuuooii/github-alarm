@@ -23,7 +23,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
 
     // 커밋 기록 조회
     const resultUser = (await query({
-      query: 'SELECT * FROM user WHERE id = ?',
+      query: 'SELECT * FROM users WHERE id = ?',
       values: [userId],
     })) as ResultProps[];
 
