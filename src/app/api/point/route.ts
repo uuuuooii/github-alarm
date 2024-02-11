@@ -35,19 +35,18 @@ export const GET = async () => {
     let history;
 
     // 오늘 커밋 기록 확인
-    const findToday = resultCommit.find((item) => item.payment_day === today);
-    console.log(
-      'findToday',
-      resultCommit.find((item) => item.payment_day === today)
+    const existingRecord = resultCommit.find(
+      (item) => item.commit_day === today
     );
-    console.log(today);
-    const commitCount = resultCommit[0].commit_count;
-    const commitDay = resultCommit[0].commit_day;
+    console.log('existingRecord', existingRecord);
+    console.log('commitCount', existingRecord?.commit_count);
 
     // 하루 커밋 수가 1개 이상이면 4포인트 부여
-    if (today === commitDay && commitCount >= 1 && !findToday) {
-      point = 4;
-      history = '매일 커밋';
+    if (existingRecord) {
+      if (existingRecord.commit_count >= 1) {
+        point = 4;
+        history = '매일 커밋';
+      }
     } else {
       point = 0;
       history = '커밋 없음';
@@ -65,15 +64,17 @@ export const GET = async () => {
     }
 
     // 포인트 기록 저장
-    if (findToday) {
+    if (existingRecord) {
       // DB 업데이트
       console.log(' DB 업데이트');
       await query({
-        query: 'UPDATE point SET point = ? WHERE id = ? AND payment_day = ?',
-        values: [point, userId, today, history],
+        query:
+          'UPDATE point SET point = ?, history = ? WHERE id = ? AND payment_day = ?',
+        values: [point, history, userId, today],
       });
     } else {
       // DB 저장
+      console.log('DB 저장');
       await query({
         query:
           'INSERT INTO point (id, payment_day, point, history) VALUES (?,?,?,?)',

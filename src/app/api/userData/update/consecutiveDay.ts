@@ -10,17 +10,11 @@ export const updateConsecutiveDay = async (userId: number) => {
 
   const result = (await query({
     query: `
-    SELECT commit_day, commit_count
-    FROM (
-      SELECT
-        commit_day,
-        commit_count,
-        ROW_NUMBER() OVER (PARTITION BY commit_day ORDER BY commit_count DESC) AS rnk
+      SELECT commit_day, MAX(commit_count) AS commit_count
       FROM users
       JOIN commit ON users.id = commit.id
-      WHERE users.id = ? 
-    ) AS ranked
-    WHERE rnk = 1;
+      WHERE users.id = ?
+      GROUP BY commit_day;
   `,
 
     values: [userId],
@@ -30,10 +24,6 @@ export const updateConsecutiveDay = async (userId: number) => {
 
   for (let i = 0; i < result.length; i++) {
     if (result[i].commit_count >= 1) {
-      // console.log('test');
-      // console.log('result[i].commit_day', result[i].commit_day);
-      // console.log('result[i].commit_count >= 1', result[i].commit_count >= 1);
-
       maxConsecutiveDays += 1;
     } else {
       maxConsecutiveDays = 0;
