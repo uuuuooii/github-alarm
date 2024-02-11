@@ -14,7 +14,14 @@ interface ResultProps {
 export const GET = async () => {
   try {
     const userId = 97392254;
-    const today = new Date().toLocaleDateString();
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+
+    const formattedDate = `${year}. ${month}. ${day}.`;
+
+    console.log(formattedDate); // 예시: "2024. 02. 11."
 
     // 커밋 기록 조회
     const resultCommit = (await query({
@@ -35,13 +42,19 @@ export const GET = async () => {
     let history;
 
     // 오늘 커밋 기록 확인
-    const findToday = resultCommit.find((item) => item.payment_day === today);
-
+    const findToday = resultCommit.find(
+      (item) => item.payment_day === formattedDate
+    );
+    console.log(
+      'findToday',
+      resultCommit.find((item) => item.payment_day === formattedDate)
+    );
+    console.log(today);
     const commitCount = resultCommit[0].commit_count;
     const commitDay = resultCommit[0].commit_day;
 
     // 하루 커밋 수가 1개 이상이면 4포인트 부여
-    if (today === commitDay && commitCount >= 1 && !findToday) {
+    if (formattedDate === commitDay && commitCount >= 1 && !findToday) {
       point = 4;
       history = '매일 커밋';
     } else {
