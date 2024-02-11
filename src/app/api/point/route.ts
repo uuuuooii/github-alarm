@@ -35,17 +35,13 @@ export const GET = async () => {
     let history;
 
     // 오늘 커밋 기록 확인
-    const existingRecord = resultCommit.find(
-      (item) => item.payment_day === today
-    );
-    console.log('existingRecord', existingRecord);
-    // for (let i = 0; i < resultCommit.length; i++) {
+    const findToday = resultCommit.find((item) => item.payment_day === today);
 
     const commitCount = resultCommit[0].commit_count;
     const commitDay = resultCommit[0].commit_day;
 
     // 하루 커밋 수가 1개 이상이면 4포인트 부여
-    if (today === commitDay && commitCount >= 1 && !existingRecord) {
+    if (today === commitDay && commitCount >= 1 && !findToday) {
       point = 4;
       history = '매일 커밋';
     } else {
@@ -65,7 +61,7 @@ export const GET = async () => {
     }
 
     // 포인트 기록 저장
-    if (existingRecord) {
+    if (findToday) {
       // DB 업데이트
       console.log(' DB 업데이트');
       await query({

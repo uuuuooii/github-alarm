@@ -4,6 +4,14 @@ import { updatePoint } from './update/point';
 import { updateConsecutiveDay } from './update/consecutiveDay';
 import { authorizationHeader } from '@/lib/utils/authorization';
 
+interface ResultProps {
+  id: number;
+  name: string;
+  nickname: string;
+  all_point: number;
+  max_consecutive_days: number;
+}
+
 export const GET = async (request: NextRequest, response: NextResponse) => {
   try {
     // 개인 정보
@@ -12,6 +20,15 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
 
     // Authorization 헤더를 가져오기
     const authorization = await authorizationHeader(request);
+
+    // 커밋 기록 조회
+    const resultUser = (await query({
+      query: 'SELECT * FROM user WHERE id = ?',
+      values: [userId],
+    })) as ResultProps[];
+
+    const findId = resultUser.find((item) => item.id === userId);
+    console.log(findId);
 
     const data = await fetch('https://api.github.com/user', {
       method: 'GET',
@@ -22,7 +39,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
 
     const json = await data.json();
 
-    if (!json.id) {
+    if (!findId) {
       // DB 저장
       await query({
         query: 'INSERT INTO users (id, username, nickname) VALUES (?, ?, ?)',
