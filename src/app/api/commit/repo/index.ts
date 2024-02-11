@@ -8,11 +8,10 @@ export interface ExistingDataProps {
 }
 
 export const getRepoData = async (
+  userId: number,
   authorization: string | NextResponse<unknown>,
   json: any
 ) => {
-  const userId = 97392254; // 사용자 ID
-
   // 레포 정보
   const reposResponse = await fetch(
     `https://api.github.com/users/${json.login}/repos`,

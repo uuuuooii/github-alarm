@@ -11,9 +11,11 @@ interface ResultProps {
   payment_day: string;
 }
 
-export const GET = async () => {
+export const GET = async (request: NextRequest) => {
   try {
-    const userId = 97392254;
+    const requestUrl = new URL(request.nextUrl);
+    const userId = requestUrl.searchParams.get('id');
+
     const today = new Date().toLocaleDateString();
 
     // 커밋 기록 조회

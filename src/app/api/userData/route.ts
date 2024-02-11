@@ -14,9 +14,8 @@ interface ResultProps {
 
 export const GET = async (request: NextRequest, response: NextResponse) => {
   try {
-    // 개인 정보
-    // 가정: 특정 사용자의 ID를 사용하여 commit_count 조회
-    const userId = 97392254; // 사용자 ID
+    const requestUrl = new URL(request.nextUrl);
+    const userId = requestUrl.searchParams.get('id');
 
     // Authorization 헤더를 가져오기
     const authorization = await authorizationHeader(request);
@@ -27,8 +26,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
       values: [userId],
     })) as ResultProps[];
 
-    const findId = resultUser.find((item) => item.id === userId);
-    console.log(findId);
+    const findId = resultUser.find((item) => item.id === Number(userId));
 
     const data = await fetch('https://api.github.com/user', {
       method: 'GET',
@@ -48,10 +46,10 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     }
 
     // point 업데이트
-    const pointData = await updatePoint(userId);
+    const pointData = await updatePoint(Number(userId));
 
     // 연속일 업데이트
-    const maxDay = await updateConsecutiveDay(userId);
+    const maxDay = await updateConsecutiveDay(Number(userId));
 
     // 클라이언트에 보내는 값
     const formattedUserData = {
