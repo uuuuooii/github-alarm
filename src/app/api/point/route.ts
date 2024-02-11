@@ -42,11 +42,9 @@ export const GET = async () => {
     console.log('commitCount', existingRecord?.commit_count);
 
     // 하루 커밋 수가 1개 이상이면 4포인트 부여
-    if (existingRecord) {
-      if (existingRecord.commit_count >= 1) {
-        point = 4;
-        history = '매일 커밋';
-      }
+    if (existingRecord && existingRecord.commit_count >= 1) {
+      point = 4;
+      history = '매일 커밋';
     } else {
       point = 0;
       history = '커밋 없음';
