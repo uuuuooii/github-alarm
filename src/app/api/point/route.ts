@@ -40,8 +40,9 @@ export const GET = async () => {
     );
     console.log('existingRecord', existingRecord);
     // for (let i = 0; i < resultCommit.length; i++) {
-    const commitCount = resultCommit.commit_count;
-    const commitDay = resultCommit.commit_day;
+
+    const commitCount = resultCommit[0].commit_count;
+    const commitDay = resultCommit[0].commit_day;
 
     // 하루 커밋 수가 1개 이상이면 4포인트 부여
     if (today === commitDay && commitCount >= 1 && !existingRecord) {
