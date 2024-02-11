@@ -12,14 +12,6 @@ export const getRepoData = async (
   json: any
 ) => {
   const userId = 97392254; // 사용자 ID
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0');
-  const day = today.getDate().toString().padStart(2, '0');
-
-  const formattedDate = `${year}. ${month}. ${day}.`;
-
-  console.log(formattedDate); // 예시: "2024. 02. 11."
 
   // 레포 정보
   const reposResponse = await fetch(
@@ -35,6 +27,7 @@ export const getRepoData = async (
   const repos = await reposResponse.json();
 
   let commitCount = 0;
+  let today: string | Date = new Date().toLocaleDateString(); // 'today' 변수 초기화
 
   for (let i = 0; i < repos.length; i++) {
     const repo = repos[i];
@@ -62,8 +55,9 @@ export const getRepoData = async (
         const commitDate = new Date(
           commit.commit.author.date
         ).toLocaleDateString();
+        today = new Date().toLocaleDateString();
 
-        return commitDate === formattedDate;
+        return commitDate === today;
       }
     );
 
