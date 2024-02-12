@@ -1,4 +1,8 @@
 // 최고 연속 커밋 기록은 api 호출 시에 users 데이터에 업데이트
+// 앱 진입해야 커밋 수 올라감
+// 격차가 2틀 이상이면 초기화
+// 날짜 계산 하는 방법 찾아보기
+// 0 처리를 어떻게 넣거나
 
 import { NextResponse, NextRequest } from 'next/server';
 import { query } from '@/lib/db';
