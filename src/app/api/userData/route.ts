@@ -14,19 +14,8 @@ interface ResultProps {
 
 export const GET = async (request: NextRequest, response: NextResponse) => {
   try {
-    const requestUrl = new URL(request.nextUrl);
-    const userId = requestUrl.searchParams.get('id');
-
     // Authorization 헤더를 가져오기
     const authorization = await authorizationHeader(request);
-
-    // 커밋 기록 조회
-    const resultUser = (await query({
-      query: 'SELECT * FROM users WHERE id = ?',
-      values: [userId],
-    })) as ResultProps[];
-
-    const findId = resultUser.find((item) => item.id === Number(userId));
 
     const data = await fetch('https://api.github.com/user', {
       method: 'GET',
@@ -34,8 +23,15 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
         Authorization: String(authorization),
       },
     });
-
     const json = await data.json();
+
+    // 커밋 기록 조회
+    const resultUser = (await query({
+      query: 'SELECT * FROM users WHERE id = ?',
+      values: [json.id],
+    })) as ResultProps[];
+
+    const findId = resultUser.find((item) => item.id === Number(json.id));
 
     if (!findId) {
       // DB 저장
@@ -46,10 +42,10 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     }
 
     // point 업데이트
-    const pointData = await updatePoint(Number(userId));
+    const pointData = await updatePoint(Number(json.id));
 
     // 연속일 업데이트
-    const maxDay = await updateConsecutiveDay(Number(userId));
+    const maxDay = await updateConsecutiveDay(Number(json.id));
 
     // 클라이언트에 보내는 값
     const formattedUserData = {

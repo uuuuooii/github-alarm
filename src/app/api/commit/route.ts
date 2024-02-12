@@ -12,9 +12,6 @@ interface commitDataProps {
 
 export const GET = async (request: NextRequest, response: NextResponse) => {
   try {
-    const requestUrl = new URL(request.nextUrl);
-    const userId = requestUrl.searchParams.get('id');
-
     // Authorization 헤더를 가져오기
     const authorization = await authorizationHeader(request);
 
@@ -28,12 +25,12 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     const json = await data.json();
 
     // 레포 정보
-    await getRepoData(Number(userId), authorization, json);
+    await getRepoData(Number(json.id), authorization, json);
 
     // 클라이언트에 보내는 값
     const commitData = (await query({
       query: 'SELECT * FROM commit WHERE id = ?',
-      values: [userId],
+      values: [json.id],
     })) as commitDataProps[];
 
     const formattedCommitData = commitData.map((commit) => ({
