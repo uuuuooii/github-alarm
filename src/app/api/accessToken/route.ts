@@ -22,7 +22,6 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     });
 
     const json = await data.json();
-    console.log('GitHub API response:', json);
 
     return new NextResponse(JSON.stringify(json), {
       status: 200,

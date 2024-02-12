@@ -71,18 +71,12 @@ export const getRepoData = async (
     query: 'SELECT commit_day, commit_count FROM commit WHERE id = ?',
     values: [userId],
   })) as ExistingDataProps[];
-  console.log(existingData);
 
   // 첫 번째가 아니라 전체 확인 해야함
   const existingRecord = existingData.find((item) => item.commit_day === today);
-  console.log('existingRecord.commit_day', existingRecord);
-  console.log('existingRecord.commit_count', existingRecord?.commit_count);
-  console.log('today', today);
-  console.log('commitCount', commitCount);
 
   if (existingRecord) {
     // DB 업데이트
-
     console.log(' DB 업데이트');
     const updatedCount = commitCount;
 
@@ -91,8 +85,6 @@ export const getRepoData = async (
         'UPDATE commit SET commit_count = ? WHERE id = ? AND commit_day = ?',
       values: [updatedCount, userId, today],
     });
-
-    console.log(`${today}에 대한 기존 레코드를 업데이트했습니다.`);
   } else {
     // DB 저장
     console.log(' DB 저장');

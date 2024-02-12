@@ -20,8 +20,6 @@ export const updateConsecutiveDay = async (userId: number) => {
     values: [userId],
   })) as ResultPops[];
 
-  console.log(result);
-
   for (let i = 0; i < result.length; i++) {
     if (result[i].commit_count >= 1) {
       maxConsecutiveDays += 1;

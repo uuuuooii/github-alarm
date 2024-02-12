@@ -40,8 +40,6 @@ export const GET = async (request: NextRequest) => {
     const existingRecord = resultCommit.find(
       (item) => item.commit_day === today
     );
-    console.log('existingRecord', existingRecord);
-    console.log('commitCount', existingRecord?.commit_count);
 
     // 하루 커밋 수가 1개 이상이면 4포인트 부여
     if (existingRecord && existingRecord.commit_count >= 1) {
