@@ -29,9 +29,9 @@ export const updateConsecutiveDay = async (userId: number) => {
     diff = Math.ceil(diff / (1000 * 60 * 60 * 24));
     console.log(diff);
     if (diff >= 2) {
-      maxConsecutiveDays += 1;
-    } else {
       maxConsecutiveDays = 0;
+    } else {
+      maxConsecutiveDays += 1;
     }
   }
 
