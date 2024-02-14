@@ -14,7 +14,7 @@ export const getRepoData = async (
 ) => {
   // 레포 정보
   const reposResponse = await fetch(
-    `https://api.github.com/users/${json.login}/repos`,
+    `https://api.github.com/users/${json.login}/repos?per_page=100`,
     {
       method: 'GET',
       headers: {
@@ -30,7 +30,7 @@ export const getRepoData = async (
 
   for (let i = 0; i < repos.length; i++) {
     const repo = repos[i];
-
+    // console.log(repo.name);
     // 레포지토리별 커밋 정보 가져오기
     const commitsResponse = await axios.get(
       `https://api.github.com/repos/${json.login}/${repo.name}/commits`,
@@ -42,7 +42,7 @@ export const getRepoData = async (
       }
     );
     const commitData = commitsResponse.data;
-
+    // console.log(commitData);
     if (commitData.length === 0) {
       console.log(`저장소에 커밋이 없음: ${repo.name}`);
       continue; // 다음 저장소로 건너뛰기
@@ -62,8 +62,8 @@ export const getRepoData = async (
 
     commitCount += todayCommits.length;
     // 레포지토리명과 오늘의 커밋 수 출력
-    console.log(`레포지토리: ${repo.name}, 오늘 커밋: ${todayCommits.length}`);
-    console.log(` 오늘 커밋 수: ${commitCount}`);
+    // console.log(`레포지토리: ${repo.name}, 오늘 커밋: ${todayCommits.length}`);
+    // console.log(` 오늘 커밋 수: ${commitCount}`);
   }
 
   // 조회
