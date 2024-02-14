@@ -22,11 +22,11 @@ export const updateConsecutiveDay = async (userId: number) => {
 
   const reverseData = result.reverse();
   for (let i = 0; i < reverseData.length; i++) {
-    console.log(result[i].commit_day);
-    // const oldDate = new Date(result[1].commit_day);
-    // const newDate = new Date(result[0].commit_day);
-    const oldDate = new Date('2023-02-29');
-    const newDate = new Date('2023-03-1');
+    console.log(typeof result[i].commit_day);
+    const oldDate = new Date(result[1].commit_day);
+    const newDate = new Date(result[0].commit_day);
+    // const oldDate = new Date('2023-02-29');
+    // const newDate = new Date('2023-03-1');
     let diff = Math.abs(newDate.getTime() - oldDate.getTime());
     diff = Math.ceil(diff / (1000 * 60 * 60 * 24));
     console.log(diff);
