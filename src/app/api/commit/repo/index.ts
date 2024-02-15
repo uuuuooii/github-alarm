@@ -57,9 +57,13 @@ export const getRepoData = async (
     // 오늘 날짜의 커밋 필터링
     const todayCommits = commitData.filter(
       (commit: { commit: { author: { date: string | number | Date } } }) => {
-        const commitDate = new Date(
-          commit.commit.author.date
-        ).toLocaleDateString();
+        const commitDate = new Date(commit.commit.author.date)
+          .toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          })
+          .replace(/\./g, '. ');
         today = new Date()
           .toLocaleDateString('ko-KR', {
             year: 'numeric',
