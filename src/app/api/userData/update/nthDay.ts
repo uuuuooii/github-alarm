@@ -40,7 +40,7 @@ export const updateNthDay = async (userId: number) => {
   }
   await query({
     query: 'UPDATE users SET nth_day = ?  WHERE id = ?',
-    values: [day, userId],
+    values: [Number(day), userId],
   });
 
   return { nth_day: day };
