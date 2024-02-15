@@ -27,13 +27,13 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
       values: [json.id],
     })) as ResultProps[];
     const findId = resultUser.find((item) => item.id === Number(json.id));
-    if (!findId) {
-      // DB 저장
-      await query({
-        query: 'INSERT INTO users (id, username, nickname) VALUES (?, ?, ?)',
-        values: [json.id, json.name, json.login],
-      });
-    }
+    // if (!findId) {
+    //   // DB 저장
+    //   await query({
+    //     query: 'INSERT INTO users (id, username, nickname) VALUES (?, ?, ?)',
+    //     values: [json.id, json.name, json.login],
+    //   });
+    // }
 
     // point 업데이트
     const pointData = await updatePoint(Number(json.id));
