@@ -1,12 +1,15 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { query } from '@/lib/db';
 import { updatePoint } from './update/point';
+import { updateNthDay } from './update/nthDay';
 import { updateConsecutiveDay } from './update/consecutiveDay';
 import { authorizationHeader } from '@/lib/utils/authorization';
+
 interface ResultProps {
   id: number;
   name: string;
   nickname: string;
+  nth_day: string;
   all_point: number;
   max_consecutive_days: number;
 }
@@ -35,18 +38,22 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
       });
     }
 
+    // 며칠 째인지 업데이트
+    const nthDay = await updateNthDay(Number(json.id));
+
     // point 업데이트
     const pointData = await updatePoint(Number(json.id));
 
     // 연속일 업데이트
-    const maxDay = await updateConsecutiveDay(Number(json.id));
+    // const maxDay = await updateConsecutiveDay(Number(json.id));
     // 클라이언트에 보내는 값
     const formattedUserData = {
       id: json.id,
       name: json.name,
       nickname: json.login,
+      nth_day: nthDay.nth_day,
       all_point: pointData.all_point,
-      max_consecutive_days: maxDay.max_consecutive_days,
+      // max_consecutive_days: maxDay.max_consecutive_days,
     };
     return new NextResponse(JSON.stringify(formattedUserData), {
       status: 200,
