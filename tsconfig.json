@@ -28,7 +28,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/lib/db.ㅓs",
-    "src/app/api/users/route.js"
+    "src/app/api/users/route.js",
+    "src/app/api/userData/route.js"
   ],
   "exclude": ["node_modules"]
 }
