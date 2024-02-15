@@ -9,7 +9,7 @@ interface ResultProps {
   id: number;
   name: string;
   nickname: string;
-  nth_day: string;
+  nth_day: number;
   all_point: number;
   max_consecutive_days: number;
 }

@@ -32,11 +32,13 @@ export const updateNthDay = async (userId: number) => {
   let diff = Math.abs(newDate.getTime() - oldDate.getTime());
   diff = Math.ceil(diff / (1000 * 60 * 60 * 24));
   console.log('diff', diff);
-
+  if (diff == 0) {
+    day++;
+  }
   await query({
     query: 'UPDATE users SET nth_day = ?  WHERE id = ?',
-    values: [diff, userId],
+    values: [day, userId],
   });
 
-  return { nth_day: diff };
+  return { nth_day: day };
 };
