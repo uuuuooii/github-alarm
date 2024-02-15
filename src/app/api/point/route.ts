@@ -16,7 +16,7 @@ export const GET = async (request: NextRequest) => {
     const requestUrl = new URL(request.nextUrl);
     const userId = requestUrl.searchParams.get('id');
 
-    const today = new Date().toLocaleDateString();
+    const today = new Date().toLocaleDateString('ko-KR');
 
     // 커밋 기록 조회
     const resultCommit = (await query({

@@ -26,7 +26,7 @@ export const getRepoData = async (
   const repos = await reposResponse.json();
 
   let commitCount = 0;
-  let today: string | Date = new Date().toLocaleDateString(); // 'today' 변수 초기화
+  let today: string | Date = new Date().toLocaleDateString('ko-KR'); // 'today' 변수 초기화
 
   for (let i = 0; i < repos.length; i++) {
     const repo = repos[i];
