@@ -26,9 +26,13 @@ export const getRepoData = async (
   const repos = await reposResponse.json();
 
   let commitCount = 0;
-  let today: string | Date = new Date().toLocaleDateString('ko-KR', {
-    timeZone: 'UTC',
-  });
+  let today: string | Date = new Date()
+    .toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replace(/\./g, '. ');
 
   for (let i = 0; i < repos.length; i++) {
     const repo = repos[i];
