@@ -60,7 +60,13 @@ export const getRepoData = async (
         const commitDate = new Date(
           commit.commit.author.date
         ).toLocaleDateString();
-        today = new Date().toLocaleDateString();
+        today = new Date()
+          .toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          })
+          .replace(/\./g, '. ');
 
         return commitDate === today;
       }
