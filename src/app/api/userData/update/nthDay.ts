@@ -17,8 +17,12 @@ export const updateNthDay = async (userId: number) => {
   const createDay = new Date(result[0].created_at);
   const updateDay = new Date(result[0].updated_at);
 
-  const formattedCreateDate = createDay.toUTCString();
-  const formattedUpdateDate = updateDay.toUTCString();
+  const formattedCreateDate = createDay.toLocaleDateString('ko-KR', {
+    timeZone: 'UTC',
+  });
+  const formattedUpdateDate = updateDay.toLocaleDateString('ko-KR', {
+    timeZone: 'UTC',
+  });
 
   // console.log('formattedCreateDate', formattedCreateDate);
   // console.log('formattedUpdateDate', formattedUpdateDate);

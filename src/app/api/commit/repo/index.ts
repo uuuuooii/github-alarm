@@ -26,7 +26,7 @@ export const getRepoData = async (
   const repos = await reposResponse.json();
 
   let commitCount = 0;
-  let today: string | Date = new Date().toUTCString();
+  let today: string | Date = new Date().toLocaleDateString('ko-KR');
 
   for (let i = 0; i < repos.length; i++) {
     const repo = repos[i];
@@ -51,8 +51,10 @@ export const getRepoData = async (
     // 오늘 날짜의 커밋 필터링
     const todayCommits = commitData.filter(
       (commit: { commit: { author: { date: string | number | Date } } }) => {
-        const commitDate = new Date(commit.commit.author.date).toUTCString();
-        today = new Date().toUTCString();
+        const commitDate = new Date(
+          commit.commit.author.date
+        ).toLocaleDateString('ko-KR');
+        today = new Date().toLocaleDateString('ko-KR');
 
         return commitDate === today;
       }
