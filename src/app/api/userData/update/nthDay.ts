@@ -35,10 +35,10 @@ export const updateNthDay = async (userId: number) => {
   if (diff == 0) {
     day++;
   }
-  await query({
-    query: 'UPDATE users SET nth_day = ?  WHERE id = ?',
-    values: [day, userId],
-  });
+  // await query({
+  //   query: 'UPDATE users SET nth_day = ?  WHERE id = ?',
+  //   values: [day, userId],
+  // });
 
   return { nth_day: day };
 };
