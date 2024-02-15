@@ -35,11 +35,11 @@ export const updateConsecutiveDay = async (userId: number) => {
       maxConsecutiveDays += 1;
     }
   }
-
+  // 테스트
   await query({
     query: 'UPDATE users SET max_consecutive_days = ? WHERE id = ?',
-    values: [diff, userId],
+    values: [maxConsecutiveDays, userId],
   });
 
-  return { max_consecutive_days: diff };
+  return { max_consecutive_days: maxConsecutiveDays };
 };
