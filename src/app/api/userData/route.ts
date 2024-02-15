@@ -45,7 +45,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     const pointData = await updatePoint(Number(json.id));
 
     // 연속일 업데이트
-    // const maxDay = await updateConsecutiveDay(Number(json.id));
+    const maxDay = await updateConsecutiveDay(Number(json.id));
 
     // 클라이언트에 보내는 값
     const formattedUserData = {
