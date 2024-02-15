@@ -19,14 +19,14 @@ export const updateConsecutiveDay = async (userId: number) => {
 
     values: [userId],
   })) as ResultPops[];
-
+  let diff;
   const reverseData = result.reverse();
   for (let i = 0; i < reverseData.length; i++) {
     console.log(typeof result[i].commit_day);
     const oldDate = new Date(result[1].commit_day);
     const newDate = new Date(result[0].commit_day);
 
-    let diff = Math.abs(newDate.getTime() - oldDate.getTime());
+    diff = Math.abs(newDate.getTime() - oldDate.getTime());
     diff = Math.ceil(diff / (1000 * 60 * 60 * 24));
     console.log(diff);
     if (diff >= 2) {
@@ -38,7 +38,7 @@ export const updateConsecutiveDay = async (userId: number) => {
 
   await query({
     query: 'UPDATE users SET max_consecutive_days = ? WHERE id = ?',
-    values: [Number(maxConsecutiveDays), userId],
+    values: [diff, userId],
   });
 
   return { max_consecutive_days: maxConsecutiveDays };
