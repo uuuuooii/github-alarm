@@ -43,5 +43,5 @@ export const updateNthDay = async (userId: number) => {
     values: [diff, userId],
   });
 
-  return { nth_day: day };
+  return { nth_day: diff };
 };

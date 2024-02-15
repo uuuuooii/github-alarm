@@ -41,5 +41,5 @@ export const updateConsecutiveDay = async (userId: number) => {
     values: [diff, userId],
   });
 
-  return { max_consecutive_days: maxConsecutiveDays };
+  return { max_consecutive_days: diff };
 };
