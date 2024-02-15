@@ -1,3 +1,4 @@
+import { updateNthDay } from './update/nthDay';
 import { NextResponse, NextRequest } from 'next/server';
 import { query } from '@/lib/db';
 import { updatePoint } from './update/point';
@@ -8,6 +9,7 @@ interface ResultProps {
   id: number;
   name: string;
   nickname: string;
+  nth_day: string;
   all_point: number;
   max_consecutive_days: number;
 }
@@ -41,6 +43,9 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
       });
     }
 
+    // 며칠 째인지 업데이트
+    const nthDay = await updateNthDay(Number(json.id));
+
     // point 업데이트
     const pointData = await updatePoint(Number(json.id));
 
@@ -52,6 +57,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
       id: json.id,
       name: json.name,
       nickname: json.login,
+      nth_day: nthDay.nth_day,
       all_point: pointData.all_point,
       max_consecutive_days: maxDay.max_consecutive_days,
     };
