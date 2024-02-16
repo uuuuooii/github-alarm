@@ -19,7 +19,6 @@ export const GET = async (request: NextRequest) => {
     const today = new Date().toLocaleDateString('ko-KR', {
       timeZone: 'Asia/Seoul',
     });
-    console.log(today);
 
     // 커밋 기록 조회
     const resultCommit = (await query({
@@ -46,7 +45,6 @@ export const GET = async (request: NextRequest) => {
           timeZone: 'Asia/Seoul',
         }) === today
     );
-    console.log(resultCommit);
 
     // 하루 커밋 수가 1개 이상이면 4포인트 부여
     if (existingRecord && existingRecord.commit_count >= 1) {

@@ -32,7 +32,7 @@ export const getRepoData = async (
 
   for (let i = 0; i < repos.length; i++) {
     const repo = repos[i];
-    // console.log(repo.name);
+
     // 레포지토리별 커밋 정보 가져오기
     const commitsResponse = await axios.get(
       `https://api.github.com/repos/${json.login}/${repo.name}/commits`,
@@ -44,7 +44,7 @@ export const getRepoData = async (
       }
     );
     const commitData = commitsResponse.data;
-    // console.log(commitData);
+
     if (commitData.length === 0) {
       console.log(`저장소에 커밋이 없음: ${repo.name}`);
       continue; // 다음 저장소로 건너뛰기

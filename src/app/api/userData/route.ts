@@ -24,6 +24,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
       },
     });
     const json = await data.json();
+
     // 커밋 기록 조회
     const resultUser = (await query({
       query: 'SELECT * FROM users WHERE id = ?',
@@ -56,6 +57,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
       all_point: pointData.all_point,
       max_consecutive_days: maxDay.max_consecutive_days,
     };
+
     return new NextResponse(JSON.stringify(formattedUserData), {
       status: 200,
       headers: {

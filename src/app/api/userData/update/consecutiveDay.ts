@@ -7,6 +7,7 @@ interface ResultPops {
 
 export const updateConsecutiveDay = async (userId: number) => {
   let maxConsecutiveDays = 0;
+  let diff;
 
   const result = (await query({
     query: `
@@ -19,10 +20,9 @@ export const updateConsecutiveDay = async (userId: number) => {
 
     values: [userId],
   })) as ResultPops[];
-  let diff;
 
   const reverseData = result.reverse();
-  console.log(reverseData);
+
   for (let i = 0; i < reverseData.length; i++) {
     if (reverseData.length > 1) {
       const oldDate = new Date(result[1].commit_day);
@@ -40,7 +40,7 @@ export const updateConsecutiveDay = async (userId: number) => {
       maxConsecutiveDays = 1;
     }
   }
-  // 테스트
+
   await query({
     query: 'UPDATE users SET max_consecutive_days = ? WHERE id = ?',
     values: [maxConsecutiveDays, userId],
