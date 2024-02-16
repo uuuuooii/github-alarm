@@ -89,6 +89,7 @@ export const GET = async (request: NextRequest) => {
 
     // 클라이언트에 보내는 값
     const formattedPoint = {
+      payment_day: today,
       point: point,
       history: history,
     };
