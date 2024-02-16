@@ -20,22 +20,24 @@ export const updateConsecutiveDay = async (userId: number) => {
     values: [userId],
   })) as ResultPops[];
   let diff;
-  console.log(result);
+
   const reverseData = result.reverse();
-  // console.log(reverseData);
+  console.log(reverseData);
   for (let i = 0; i < reverseData.length; i++) {
-    const oldDate = new Date(result[1].commit_day);
-    const newDate = new Date(result[0].commit_day);
-    // const oldDate = new Date('2023-04-20');
-    // const newDate = new Date('2023-04-22');
-    console.log(oldDate);
-    diff = Math.abs(newDate.getTime() - oldDate.getTime());
-    diff = Math.ceil(diff / (1000 * 60 * 60 * 24));
-    console.log(diff);
-    if (diff >= 2) {
-      maxConsecutiveDays = 0;
+    if (reverseData.length > 1) {
+      const oldDate = new Date(result[1].commit_day);
+      const newDate = new Date(result[0].commit_day);
+
+      diff = Math.abs(newDate.getTime() - oldDate.getTime());
+      diff = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+      if (diff >= 2) {
+        maxConsecutiveDays = 0;
+      } else {
+        maxConsecutiveDays += 1;
+      }
     } else {
-      maxConsecutiveDays += 1;
+      maxConsecutiveDays = 1;
     }
   }
   // 테스트
